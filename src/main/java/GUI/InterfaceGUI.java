@@ -8,4 +8,8 @@ public class InterfaceGUI {
     public static void initGUI(){
         gui = new GUI();
     }
+
+    public static void showMessage (String msg){
+        gui.showMessage(msg);
+    }
 }
