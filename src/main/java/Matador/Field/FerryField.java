@@ -6,7 +6,8 @@ public class FerryField extends Field {
     Boolean pawned;
     int price, mortgage;
     int[] rent; //array of 4 rent prices indexed by number of ferry companies owned (1-4)
-    public FerryField(String title, int price, int mortgage, int[] rent) {
+    public FerryField(String title,
+                      int price, int mortgage, int[] rent) {
         super(title, Color.WHITE, "Pris: " + price, "");
         this.pawned = false;
         this.price = price;
