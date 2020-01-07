@@ -4,6 +4,6 @@ import java.awt.*;
 
 public class VisitJailField extends Field {
     public VisitJailField() {
-        super("Jail", Color.GRAY,"Visitors allowed", "");
+        super("Fængsel", Color.DARK_GRAY,"Du på besøg", "");
     }
 }
