@@ -1,5 +1,6 @@
 package Matador.Field;
 
+import GUI.InterfaceGUI;
 import Matador.User.Player;
 
 public abstract class OwnableField extends Field {
@@ -17,8 +18,9 @@ public abstract class OwnableField extends Field {
         return owner;
     }
 
-    public void setOwner(Player owner) {
+    public void setOwner(Player owner, int fieldIndex) {
         this.owner = owner;
+        InterfaceGUI.setGUIFieldOwner(owner.getName(), fieldIndex);
     }
 
     public Boolean getPawned() {

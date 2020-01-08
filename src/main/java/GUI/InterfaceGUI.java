@@ -54,6 +54,10 @@ public class InterfaceGUI {
     public static void showMessage (String msg){
         gui.showMessage(msg);
     }
+    public static void showMessage (String msg, String name){
+        gui.showMessage("PERSON: " + name + " - " + msg);
+    }
+
 
     public static String awaitUserStringInput (String msg){
         return gui.getUserString(msg);
@@ -69,6 +73,9 @@ public class InterfaceGUI {
 
     public static String awaitUserButtonsClicked (String msg, String... buttonsString){
         return gui.getUserButtonPressed(msg, buttonsString);
+    }
+    public static String awaitUserButtonsClicked (String msg, String name, String... buttonsString){
+        return gui.getUserButtonPressed("PERSON: " + name + " - " + msg, buttonsString);
     }
 
     public static void setDices(int dieValue1, int dieValue2){

@@ -10,11 +10,16 @@ public class RaffleCup {
         d2 = new Die();
     }
 
-    public void awaitShakeTheRaffleCup(){
+    public void awaitShakeTheRaffleCup(String name){
         String[] buttons = new String[]{"Kast terning",};
-        InterfaceGUI.awaitUserButtonsClicked("", buttons);
+        InterfaceGUI.awaitUserButtonsClicked("Kast terning", name, buttons);
+        this.shakeTheRaffleCup();
+    }
+
+    public void shakeTheRaffleCup(){
         d1.rollDie();
         d2.rollDie();
+        InterfaceGUI.setDices(d1.getDie(), d2.getDie());
     }
 
     public boolean isSameDie(){
@@ -22,7 +27,6 @@ public class RaffleCup {
     }
 
     public int getTotalValue(){
-        InterfaceGUI.setDices(d1.getDie(), d2.getDie());
         return d1.getDie() + d2.getDie();
     }
 }

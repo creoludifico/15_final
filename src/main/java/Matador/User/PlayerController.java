@@ -74,13 +74,12 @@ public class PlayerController {
 
     public void movePlayerOnField(Player player, int diceValues){
         int fieldIndex = player.getFieldIndex() + diceValues;
+        if(fieldIndex > fieldController.getFields().length || player.isBonusOnNextRaffle()){
+            player.getAccount().setBalance(player.getAccount().getBalance() + 200, player.getName());
+            player.setBonusOnNextRaffle(false);
+        }
         if (fieldIndex == fieldController.getFields().length){
             player.setBonusOnNextRaffle(true);
-        }
-        if(fieldIndex > fieldController.getFields().length || player.isBonusOnNextRaffle()){
-            player.getAccount().setBalance(player.getAccount().getBalance() + 200);
-            player.setBonusOnNextRaffle(false);
-            InterfaceGUI.setGuiPlayerBalance(player.getName(), player.getAccount().getBalance());
         }
 
         player.setFieldIndex(fieldIndex % fieldController.getFields().length);

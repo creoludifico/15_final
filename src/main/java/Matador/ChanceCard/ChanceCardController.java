@@ -84,7 +84,7 @@ public class ChanceCardController {
         if (pickedCard instanceof CashInDependentAssetsCard) {
             CashInDependentAssetsCard cidac = (CashInDependentAssetsCard) pickedCard;
             if (collectAsssets(player) < cidac.getMaxCashLimit()) {
-                player.getAccount().setBalance(player.getAccount().getBalance() + cidac.getCash());
+                player.getAccount().setBalance(player.getAccount().getBalance() + cidac.getCash(), player.getName());
             }
         }
 
@@ -93,9 +93,9 @@ public class ChanceCardController {
             CashInFromOtherPlayersCard cifopc = (CashInFromOtherPlayersCard) pickedCard;
             for (int i = 0; i < playerController.getPlayers().length; i++) {
                 if (playerController.getPlayer(i) != player) {
-                    player.getAccount().setBalance(player.getAccount().getBalance() - cifopc.getCash());
+                    player.getAccount().setBalance(player.getAccount().getBalance() - cifopc.getCash(), player.getName());
                 } else {
-                    player.getAccount().setBalance((playerController.getPlayers().length - 1) * cifopc.getCash());
+                    player.getAccount().setBalance((playerController.getPlayers().length - 1) * cifopc.getCash(), player.getName());
                 }
             }
         }
@@ -103,7 +103,7 @@ public class ChanceCardController {
         // Betal eller modtag penge
         else if (pickedCard instanceof CashInOutCard) {
             CashInOutCard cioc = (CashInOutCard) pickedCard;
-            player.getAccount().setBalance(player.getAccount().getBalance() + cioc.getCash());
+            player.getAccount().setBalance(player.getAccount().getBalance() + cioc.getCash(), player.getName());
         }
 
         // Betal penge udfra antal huse og hoteller
@@ -116,9 +116,9 @@ public class ChanceCardController {
                     StreetField streetField = (StreetField) field;
                     if (streetField.getOwner() == player) {
                         if (streetField.getBuildings() <= 4) {
-                            player.getAccount().setBalance(player.getAccount().getBalance() + codbc.getHousePrice());
+                            player.getAccount().setBalance(player.getAccount().getBalance() + codbc.getHousePrice(), player.getName());
                         } else if (streetField.getBuildings() > 4) {
-                            player.getAccount().setBalance(player.getAccount().getBalance() + codbc.getHotelPrice());
+                            player.getAccount().setBalance(player.getAccount().getBalance() + codbc.getHotelPrice(), player.getName());
                         }
                     }
                 }
@@ -142,7 +142,7 @@ public class ChanceCardController {
             if(fieldController.getFields()[playerFieldIndex] instanceof FerryField) {
                 FerryField field = (FerryField) fieldController.getFields()[playerFieldIndex];
                 if(field.getOwner() != null) {
-                    player.getAccount().setBalance(player.getAccount().getBalance() - field.getRent(getFerries(player)));
+                    player.getAccount().setBalance(player.getAccount().getBalance() - field.getRent(getFerries(player)), player.getName());
                 }
             }
         }

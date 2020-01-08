@@ -105,7 +105,7 @@ public class FieldController {
             String[] buttons = new String[]{
                     "10%", "200kr"
             };
-            String answer = InterfaceGUI.awaitUserButtonsClicked("Du skal betale skat. Vil du betale 10% af alle aktiver eller kr. 200", buttons);
+            String answer = InterfaceGUI.awaitUserButtonsClicked("Du skal betale skat. Vil du betale 10% af alle aktiver eller kr. 200", player.getName(), buttons);
             if(answer.equals("10%")){
                 int totalPrice = 0;
                 totalPrice += player.getAccount().getBalance();
@@ -131,12 +131,11 @@ public class FieldController {
                     }
                 }
                 totalPrice = totalPrice / 10;
-                player.getAccount().setBalance(player.getAccount().getBalance() - totalPrice);
+                player.getAccount().setBalance(player.getAccount().getBalance() - totalPrice, player.getName());
             }
             else if(answer.equals("200kr")){
-                player.getAccount().setBalance(player.getAccount().getBalance() - 200);
+                player.getAccount().setBalance(player.getAccount().getBalance() - 200, player.getName());
             }
-            InterfaceGUI.setGuiPlayerBalance(player.getName(), player.getAccount().getBalance());
         }
         else if(field instanceof VisitJailField){
             //VisitJailField visitJailField = (VisitJailField) field; //Sker heller ikke en dyt her
@@ -150,12 +149,10 @@ public class FieldController {
             String[] buttons = new String[]{
                     "Ja", "Nej"
             };
-            String answer = InterfaceGUI.awaitUserButtonsClicked("Denne grund er ikke købt. Vil du købe?", buttons);
+            String answer = InterfaceGUI.awaitUserButtonsClicked("Denne grund er ikke købt. Vil du købe?", player.getName(), buttons);
             if(answer.equals("Ja")){
-                player.getAccount().setBalance(player.getAccount().getBalance() - ownableField.getPrice());
-                ownableField.setOwner(player);
-                InterfaceGUI.setGUIFieldOwner(player.getName(), fieldIndex);
-                InterfaceGUI.setGuiPlayerBalance(player.getName(), player.getAccount().getBalance());
+                player.getAccount().setBalance(player.getAccount().getBalance() - ownableField.getPrice(), player.getName());
+                ownableField.setOwner(player, fieldIndex);
             }
         }
     }
