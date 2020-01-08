@@ -8,6 +8,7 @@ public class Player {
 
     private boolean inJail = false;
     private boolean hasEscapeJailCard = false;
+    private boolean bonusOnNextRaffle = false;
 
     private int fieldIndex = 0;
 
@@ -44,5 +45,13 @@ public class Player {
     }
     public int getFieldIndex() {
         return fieldIndex;
+    }
+
+    public boolean isBonusOnNextRaffle() {
+        return bonusOnNextRaffle;
+    }
+
+    public void setBonusOnNextRaffle(boolean bonusOnNextRaffle) {
+        this.bonusOnNextRaffle = bonusOnNextRaffle;
     }
 }

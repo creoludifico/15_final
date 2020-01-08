@@ -75,51 +75,88 @@ public class FieldController {
 
         if(field instanceof BeerField){
             BeerField beerField = (BeerField) field;
-            if(beerField.getOwner() == null){
-                String[] buttons = new String[]{
-                        "Ja", "Nej"
-                };
-                String answer = InterfaceGUI.awaitUserButtonsClicked("Dette brygeri er ikke købt. Vil du købe?", buttons);
-                if(answer.equals("Ja")){
-                    player.getAccount().setBalance(player.getAccount().getBalance() - beerField.getPrice());
-                    beerField.setOwner(player);
-                    InterfaceGUI.setGUIFieldOwner(player.getName(), fieldIndex);
-                    InterfaceGUI.setGuiPlayerBalance(player.getName(), player.getAccount().getBalance());
-                }
-            }
+            ownableFieldAction(player, fieldIndex);
         }
         else if(field instanceof ChanceField){
-            ChanceField chanceField = (ChanceField) field;
-
+            //ChanceField chanceField = (ChanceField) field; //Feltet i sig selv skal ikke bruges her.
+            chanceCardController.action(player);
         }
         else if(field instanceof FerryField){
             FerryField ferryField = (FerryField) field;
-
+            ownableFieldAction(player, fieldIndex);
         }
         else if(field instanceof JailField){
-            JailField jailField = (JailField) field;
-
+            //JailField jailField = (JailField) field; //Feltet i sig selv skal ikke bruges her.
+            player.setInJail(true);
+            player.setFieldIndex(10);
         }
         else if(field instanceof RefugeField){
-            RefugeField refugeField = (RefugeField) field;
-
+            //RefugeField refugeField = (RefugeField) field; //Der sker ikke en dyt her "Pause felt"
         }
         else if(field instanceof StartField){
-            StartField startField = (StartField) field;
-
+            //StartField startField = (StartField) field; //Der sker heller ikke en dyt her
         }
         else if(field instanceof StreetField){
             StreetField streetField = (StreetField) field;
-
+            ownableFieldAction(player, fieldIndex);
         }
         else if(field instanceof TaxField){
             TaxField taxField = (TaxField) field;
-
+            String[] buttons = new String[]{
+                    "10%", "200kr"
+            };
+            String answer = InterfaceGUI.awaitUserButtonsClicked("Du skal betale skat. Vil du betale 10% af alle aktiver eller kr. 200", buttons);
+            if(answer.equals("10%")){
+                int totalPrice = 0;
+                totalPrice += player.getAccount().getBalance();
+                for(Field f : this.getFields()){
+                    if(f instanceof StreetField){
+                        StreetField streetField = (StreetField) f;
+                        if(player == streetField.getOwner()){
+                            totalPrice += streetField.getPrice();
+                            totalPrice += streetField.getBuildingPrice() * streetField.getBuildings();
+                        }
+                    }
+                    else if(f instanceof FerryField){
+                        FerryField ferryField = (FerryField) f;
+                        if(player == ferryField.getOwner()){
+                            totalPrice += ferryField.getPrice();
+                        }
+                    }
+                    else if(f instanceof BeerField){
+                        BeerField beerField = (BeerField) f;
+                        if(player == beerField.getOwner()){
+                            totalPrice += beerField.getPrice();
+                        }
+                    }
+                }
+                totalPrice = totalPrice / 10;
+                player.getAccount().setBalance(player.getAccount().getBalance() - totalPrice);
+            }
+            else if(answer.equals("200kr")){
+                player.getAccount().setBalance(player.getAccount().getBalance() - 200);
+            }
+            InterfaceGUI.setGuiPlayerBalance(player.getName(), player.getAccount().getBalance());
         }
         else if(field instanceof VisitJailField){
-            VisitJailField visitJailField = (VisitJailField) field;
-
+            //VisitJailField visitJailField = (VisitJailField) field; //Sker heller ikke en dyt her
         }
     }
 
+    private void ownableFieldAction(Player player, int fieldIndex){
+        Field field = this.getFields()[fieldIndex];
+        OwnableField ownableField = (OwnableField) field;
+        if(ownableField.getOwner() == null){
+            String[] buttons = new String[]{
+                    "Ja", "Nej"
+            };
+            String answer = InterfaceGUI.awaitUserButtonsClicked("Denne grund er ikke købt. Vil du købe?", buttons);
+            if(answer.equals("Ja")){
+                player.getAccount().setBalance(player.getAccount().getBalance() - ownableField.getPrice());
+                ownableField.setOwner(player);
+                InterfaceGUI.setGUIFieldOwner(player.getName(), fieldIndex);
+                InterfaceGUI.setGuiPlayerBalance(player.getName(), player.getAccount().getBalance());
+            }
+        }
+    }
 }
