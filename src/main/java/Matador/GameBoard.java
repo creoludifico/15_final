@@ -91,7 +91,7 @@ public class GameBoard {
                 playerController.movePlayerOnField(currentPlayer, raffleCup.getTotalValue());
 
                 int currentPlayerFieldIndex = playerController.getCurrentPlayer().getFieldIndex();
-                fieldController.fieldAction(currentPlayer, currentPlayerFieldIndex);
+                fieldController.fieldAction(currentPlayer, currentPlayerFieldIndex, raffleCup);
             }
 
             currentPlayerIndex++;

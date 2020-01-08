@@ -39,6 +39,11 @@ public class InterfaceGUI {
         for(int i = 0;i<fields.length;i++){
             guiFields[i].setTitle(fields[i].getTitle());
             guiFields[i].setSubText(fields[i].getSubTitle());
+            if(guiFields[i] instanceof GUI_Street){
+                GUI_Street guiStreet = (GUI_Street) guiFields[i];
+                guiStreet.setRent("");
+                guiStreet.setRentLabel("");
+            }
         }
     }
 
