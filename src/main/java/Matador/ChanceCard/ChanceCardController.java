@@ -1,12 +1,18 @@
 package Matador.ChanceCard;
+import Matador.Field.*;
+import Matador.User.Player;
+import Matador.User.PlayerController;
+
 import java.util.Arrays;
 import java.util.Random;
 
 public class ChanceCardController {
     private ChanceCard[] chanceCards;
+    private FieldController fieldController;
+    private PlayerController playerController;
 
 
-    public ChanceCardController(){
+    public ChanceCardController(FieldController fieldController, PlayerController playerController){
         chanceCards = new ChanceCard[] {
                 new CashInOutCard("Modtag udbytte af deres aktier. kr 50", 50),
                 new CashInDependentAssetsCard("De modtager >>Matador-legatet<< for værdig trængende, stort kr. 2000. Ved værdig trængende forstås, at deres formue, d.v.s. deres kontakte penge + skøder + bygninger ikke overstiger kr. 750."),
@@ -39,7 +45,8 @@ public class ChanceCardController {
                 new CashInOutCard("Deres præmieobligation er kommet ud. De modtager kr. 100 af banken.", 100)
         };
         shuffleCards();
-
+        this.fieldController = fieldController;
+        this.playerController = playerController;
     }
 
     public ChanceCard[] getDeck(){
@@ -56,12 +63,87 @@ public class ChanceCardController {
         }
     }
 
-    public ChanceCard pickCard(){
+    public void pickCard(Player player){
         ChanceCard temp = chanceCards[0];
         for(int i = 1; i < chanceCards.length;i++){
             chanceCards[i-1] = chanceCards[i];
         }
         chanceCards[chanceCards.length-1] = temp;
-        return chanceCards[0];
+        ChanceCard pickedCard = chanceCards[0];
+
+        // Bonus hvis given total værdi
+        if(pickedCard instanceof CashInDependentAssetsCard) {
+            CashInDependentAssetsCard cidac = (CashInDependentAssetsCard) pickedCard;
+            if (collectAsssets(player) < cidac.getMaxCashLimit()) {
+                player.getAccount().setBalance(player.getAccount().getBalance() + cidac.getCash());
+            }
+        }
+
+        else if(pickedCard instanceof  CashInFromOtherPlayersCard){
+            CashInFromOtherPlayersCard cifopc = (CashInFromOtherPlayersCard) pickedCard;
+            for(int i = 0; i < playerController.getPlayers().length;i++){
+                if(playerController.getPlayer(i) != player){
+                    player.getAccount().setBalance(player.getAccount().getBalance() - cifopc.getCash());
+                }
+            }
+
+        }
+        else if(pickedCard instanceof CashInOutCard){
+            CashInOutCard cioc = (CashInOutCard) pickedCard;
+        }
+        else if(pickedCard instanceof CashOutDependentBuildingCard){
+            CashOutDependentBuildingCard codbc = (CashOutDependentBuildingCard) pickedCard;
+        }
+        else if(pickedCard instanceof FerryCard){
+            // MANGLER DOBBELT LEJE TIL EJER
+            FerryCard fc = (FerryCard) pickedCard;
+
+            int playerFieldIndex = player.getFieldIndex();
+            if(playerFieldIndex < fc.getOeresond()){
+                player.setFieldIndex(fc.getOeresond());
+            }else if(playerFieldIndex < fc.getDfds()){
+                player.setFieldIndex(fc.getDfds());
+            }else if(playerFieldIndex < fc.getOes()){
+                player.setFieldIndex(fc.getOes());
+            }else if(playerFieldIndex < fc.getBornholm()){
+                player.setFieldIndex(fc.getBornholm());
+            }else{
+                player.setFieldIndex(fc.getOeresond());
+            }
+        }
+        else if(pickedCard instanceof MoveAbsoluteCard){
+            MoveAbsoluteCard mac = (MoveAbsoluteCard) pickedCard;
+            player.setFieldIndex(mac.getFieldIndex());
+        }
+        else if(pickedCard instanceof MoveBackwardsCard){
+            MoveBackwardsCard mbc = (MoveBackwardsCard) pickedCard;
+            player.setFieldIndex(player.getFieldIndex() - mbc.getBackward());
+        }
+        else if(pickedCard instanceof MoveToJailCard){
+            MoveToJailCard mtjc = (MoveToJailCard) pickedCard;
+            player.setFieldIndex(mtjc.getFieldIndex());
+        }
+        else if(pickedCard instanceof PardonCard){
+            PardonCard pc = (PardonCard) pickedCard;
+        }
+    }
+
+    public int collectAsssets(Player player) {
+        Field[] fields = fieldController.getFields();
+        int total = 0;
+        for (int index = 0; index < fields.length; index++) {
+            Field field = fields[index];
+            if (field instanceof OwnableField) {
+                OwnableField ownableField = (OwnableField) field;
+                if (ownableField.getOwner() == player) {
+                    total += ownableField.getPrice();
+                    if (ownableField instanceof StreetField) {
+                        StreetField streetField = (StreetField) ownableField;
+                        total += streetField.getBuildingPrice() * streetField.getBuildings();
+                    }
+                }
+            }
+        }
+        return total;
     }
 }

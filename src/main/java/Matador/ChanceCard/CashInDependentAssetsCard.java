@@ -1,6 +1,7 @@
 package Matador.ChanceCard;
 
 public class CashInDependentAssetsCard extends ChanceCard {
+    // Hvis given resource kapital under 750,- modtag 2000
     private final int cash = 2000;
     private final int maxCashLimit = 750;
 
