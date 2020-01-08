@@ -11,8 +11,14 @@ public class ChanceCardController {
     private FieldController fieldController;
     private PlayerController playerController;
 
+    public void setFieldController(FieldController fieldController){
+        this.fieldController = fieldController;
+    }
+    public void setPlayerController(PlayerController playerController){
+        this.playerController = playerController;
+    }
 
-    public ChanceCardController(FieldController fieldController, PlayerController playerController){
+    public ChanceCardController(){
         chanceCards = new ChanceCard[] {
                 new CashInOutCard("Modtag udbytte af deres aktier. kr 50", 50),
                 new CashInDependentAssetsCard("De modtager >>Matador-legatet<< for værdig trængende, stort kr. 2000. Ved værdig trængende forstås, at deres formue, d.v.s. deres kontakte penge + skøder + bygninger ikke overstiger kr. 750."),
@@ -45,8 +51,6 @@ public class ChanceCardController {
                 new CashInOutCard("Deres præmieobligation er kommet ud. De modtager kr. 100 af banken.", 100)
         };
         shuffleCards();
-        this.fieldController = fieldController;
-        this.playerController = playerController;
     }
 
     public ChanceCard[] getDeck(){

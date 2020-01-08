@@ -1,9 +1,8 @@
 package GUI;
 
 import Matador.Field.Field;
-import gui_fields.GUI_Car;
-import gui_fields.GUI_Field;
-import gui_fields.GUI_Player;
+import Matador.Field.StreetField;
+import gui_fields.*;
 import gui_main.GUI;
 
 import java.awt.*;
@@ -43,6 +42,15 @@ public class InterfaceGUI {
         }
     }
 
+    public static void setGuiPlayerBalance(String name, int balance){
+        getGuiPlayer(name).setBalance(balance);
+    }
+
+    public static void setGUIFieldOwner(String name, int fieldIndex){
+        GUI_Field guiField = guiFields[fieldIndex];
+        ((GUI_Ownable) guiField).setOwnerName(name);
+    }
+
     public static void showMessage (String msg){
         gui.showMessage(msg);
     }
@@ -79,13 +87,19 @@ public class InterfaceGUI {
     }
 
     public static void movePlayerToField(String name, int fieldIndex) {
-        for(GUI_Player guiPlayer : guiPlayers){
-            if(guiPlayer.getName().equals(name)){
-                for(GUI_Field guiField : guiFields){
-                    guiField.setCar(guiPlayer, false);
-                }
-                guiFields[fieldIndex].setCar(guiPlayer, true);
+        GUI_Player guiPlayer = getGuiPlayer(name);
+        for(GUI_Field guiField : guiFields){
+            guiField.setCar(guiPlayer, false);
+        }
+        guiFields[fieldIndex].setCar(guiPlayer, true);
+    }
+    public static GUI_Player getGuiPlayer(String name){
+        GUI_Player guiPlayer = null;
+        for(GUI_Player gp : guiPlayers) {
+            if (gp.getName().equals(name)) {
+                guiPlayer = gp;
             }
         }
+        return guiPlayer;
     }
 }

@@ -1,11 +1,23 @@
 package Matador.Field;
 
 import GUI.InterfaceGUI;
+import Matador.ChanceCard.ChanceCardController;
+import Matador.User.Player;
+import Matador.User.PlayerController;
 
 import java.awt.*;
 
 public class FieldController {
     private Field[] fields;
+    private PlayerController playerController;
+    private ChanceCardController chanceCardController;
+
+    public void setPlayerController(PlayerController playerController) {
+        this.playerController = playerController;
+    }
+    public void setChanceCardController(ChanceCardController chanceCardController) {
+        this.chanceCardController = chanceCardController;
+    }
 
     public FieldController() {
         fields = new Field[] {
@@ -56,6 +68,58 @@ public class FieldController {
 
     public Field[] getFields() {
         return fields;
+    }
+
+    public void fieldAction(Player player, int fieldIndex){
+        Field field = this.getFields()[fieldIndex];
+
+        if(field instanceof BeerField){
+            BeerField beerField = (BeerField) field;
+            if(beerField.getOwner() == null){
+                String[] buttons = new String[]{
+                        "Ja", "Nej"
+                };
+                String answer = InterfaceGUI.awaitUserButtonsClicked("Dette brygeri er ikke købt. Vil du købe?", buttons);
+                if(answer.equals("Ja")){
+                    player.getAccount().setBalance(player.getAccount().getBalance() - beerField.getPrice());
+                    beerField.setOwner(player);
+                    InterfaceGUI.setGUIFieldOwner(player.getName(), fieldIndex);
+                    InterfaceGUI.setGuiPlayerBalance(player.getName(), player.getAccount().getBalance());
+                }
+            }
+        }
+        else if(field instanceof ChanceField){
+            ChanceField chanceField = (ChanceField) field;
+
+        }
+        else if(field instanceof FerryField){
+            FerryField ferryField = (FerryField) field;
+
+        }
+        else if(field instanceof JailField){
+            JailField jailField = (JailField) field;
+
+        }
+        else if(field instanceof RefugeField){
+            RefugeField refugeField = (RefugeField) field;
+
+        }
+        else if(field instanceof StartField){
+            StartField startField = (StartField) field;
+
+        }
+        else if(field instanceof StreetField){
+            StreetField streetField = (StreetField) field;
+
+        }
+        else if(field instanceof TaxField){
+            TaxField taxField = (TaxField) field;
+
+        }
+        else if(field instanceof VisitJailField){
+            VisitJailField visitJailField = (VisitJailField) field;
+
+        }
     }
 
 }

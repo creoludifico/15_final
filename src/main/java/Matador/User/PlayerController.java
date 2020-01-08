@@ -1,6 +1,7 @@
 package Matador.User;
 
 import GUI.InterfaceGUI;
+import Matador.ChanceCard.ChanceCardController;
 import Matador.Field.Field;
 import Matador.Field.FieldController;
 
@@ -8,8 +9,16 @@ public class PlayerController {
     private Player[] players;
     private Player currentPlayer;
     private FieldController fieldController;
+    private ChanceCardController chanceCardController;
 
-    public PlayerController(FieldController fieldController){
+    public void setFieldController(FieldController fieldController) {
+        this.fieldController = fieldController;
+    }
+    public void setChanceCardController(ChanceCardController chanceCardController) {
+        this.chanceCardController = chanceCardController;
+    }
+
+    public PlayerController(){
         int playerCount = 0;
         while(playerCount < 3 || playerCount > 6){
             playerCount = InterfaceGUI.awaitUserIntegerInput("Indtast antal spillere mellem 3-6", 3, 6);
@@ -47,7 +56,6 @@ public class PlayerController {
         for(Player player : players){
             player.setFieldIndex(0);
         }
-        this.fieldController = fieldController;
     }
 
     public Player[] getPlayers(){
