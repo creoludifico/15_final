@@ -8,7 +8,7 @@ public class FerryField extends Field {
     int[] rent; //array of 4 rent prices indexed by number of ferry companies owned (1-4)
     public FerryField(String title,
                       int price, int mortgage, int[] rent) {
-        super(title, Color.WHITE, "Pris: " + price, "");
+        super(title, "Pris: " + price);
         this.pawned = false;
         this.price = price;
         this.mortgage = mortgage;

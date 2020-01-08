@@ -1,5 +1,7 @@
 package Matador.User;
 
+import GUI.InterfaceGUI;
+
 public class Player {
     private String name;
     private Account account;
@@ -30,6 +32,10 @@ public class Player {
         return hasEscapeJailCard;
     }
 
+    public void setFieldIndex(int fieldIndex){
+        this.fieldIndex = fieldIndex;
+        InterfaceGUI.movePlayerToField(name, fieldIndex);
+    }
     public int getFieldIndex() {
         return fieldIndex;
     }

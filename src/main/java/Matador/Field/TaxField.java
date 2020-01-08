@@ -7,8 +7,7 @@ public class TaxField extends Field {
     float percentage;
 
     public TaxField(String title, String subTitle, int amount, float percentage) {
-        super(title,
-                Color.GRAY, subTitle, "");
+        super(title, subTitle);
         this.amount = amount;
         this.percentage = percentage;
     }

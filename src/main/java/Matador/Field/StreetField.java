@@ -11,8 +11,8 @@ public class StreetField extends Field {
     public int getRent() { return rent[buildings]; }
     public int getMortgage() { return mortgage; }
     public int getBuildingPrice() { return buildingPrice; }
-    public StreetField(String title, Color color, int price, int mortgage, int buildingPrice, int[] rent) {
-        super(title, color, "Pris: " + price, "");
+    public StreetField(String title, int price, int mortgage, int buildingPrice, int[] rent) {
+        super(title, "Pris: " + price);
         this.price = price;
         this.mortgage = mortgage;
         this.buildingPrice = buildingPrice;

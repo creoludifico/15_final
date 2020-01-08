@@ -10,7 +10,7 @@ public class BeerField extends Field {
     int getMortgage() { return mortgage; }
 
     public BeerField(String title, int price) {
-        super(title, Color.BLACK, "", "");
+        super(title, "");
         this.price = price;
     }
 }

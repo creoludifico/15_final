@@ -1,22 +1,42 @@
 package Matador;
 
 import GUI.InterfaceGUI;
+import Matador.Field.FieldController;
+import Matador.RaffleCup.RaffleCup;
 import Matador.User.Account;
 import Matador.User.Player;
 import Matador.User.PlayerController;
 
 public class GameBoard {
-    PlayerController playerController;
+    private PlayerController playerController;
+    private FieldController fieldController;
+
+    private boolean gameOver = false;
 
     public GameBoard(){
         //Opsætter gui boardet
         InterfaceGUI.initGUI();
+
+        //Fields oprettes
+        fieldController = new FieldController();
 
         //Spillerne oprettes
         playerController = new PlayerController();
     }
 
     public void runGame(){
+        RaffleCup raffleCup = new RaffleCup();
+        int currentPlayerIndex = 0;
+        while(!gameOver){
+            Player currentPlayer = playerController.getPlayer(currentPlayerIndex);
 
+            raffleCup.awaitShakeTheRaffleCup();
+            playerController.movePlayerOnField(currentPlayer, raffleCup.getTotalValue(), fieldController.getFieldCount());
+
+            currentPlayerIndex++;
+            if(currentPlayerIndex == playerController.getPlayerCount()){
+                currentPlayerIndex = 0;
+            }
+        }
     }
 }
