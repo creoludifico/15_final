@@ -25,7 +25,7 @@ public class FieldController {
                 new StreetField("Rødovrevej", 60, 30, 50, new int[] {2, 10, 30, 90, 160, 250}),
                 new ChanceField(),
                 new StreetField("Hvidovrevej", 60,30, 50, new int[] {4, 20, 60, 180, 320, 450}),
-                new TaxField("Betal indkomstskat", "10% el. 200", 200, 0.10f),
+                new TaxField("Betal indkomstskat", "10% el. 200", 0.10),
                 new FerryField("Øresund", 200, 100),
                 new StreetField("Roskildevej", 100, 50, 50, new int[] {6, 30, 90, 270, 400, 550}),
                 new ChanceField(),
@@ -59,7 +59,7 @@ public class FieldController {
                 new FerryField("Bornholm", 200, 100),
                 new ChanceField(),
                 new StreetField("Frederiksborggade", 350, 175, 200, new int[] {35, 175, 500, 1100, 1300, 1500}),
-                new TaxField("Ekstraordinær statsskat", "Betal 100", 100, 0.0f),
+                new TaxField("Ekstraordinær statsskat", "Betal 100", 0.0),
                 new StreetField("Rådhuspladsen", 400, 200, 200, new int[] {50, 200, 600, 1400, 1700, 2000})
                 };
 
@@ -102,12 +102,26 @@ public class FieldController {
         }
         else if(field instanceof TaxField){
             TaxField taxField = (TaxField) field;
-            String[] buttons = new String[]{
-                    "10%", "200kr"
-            };
-            String answer = InterfaceGUI.awaitUserButtonsClicked("Du skal betale skat. Vil du betale 10% af alle aktiver eller kr. 200", player.getName(), buttons);
-            if(answer.equals("10%")){
-                int totalPrice = 0;
+
+            String[] buttons;
+
+            String pay10Percent = "Betal 10%";
+            String pay100 = "Betal kr. 100";
+            String pay200 = "Betal kr. 200";
+
+            if(taxField.percentage > 0){
+                buttons = new String[]{
+                        pay10Percent,
+                        pay200
+                };
+            }else{
+                buttons = new String[]{
+                        pay100
+                };
+            }
+            String answer = InterfaceGUI.awaitUserButtonsClicked("Du skal betale skat.", player.getName(), buttons);
+            if(answer.equals(pay10Percent)){
+                double totalPrice = 0;
                 totalPrice += player.getAccount().getBalance();
                 for(Field f : this.getFields()){
                     if(f instanceof StreetField){
@@ -130,11 +144,15 @@ public class FieldController {
                         }
                     }
                 }
-                totalPrice = totalPrice / 10;
-                player.getAccount().setBalance(player.getAccount().getBalance() - totalPrice, player.getName());
+                totalPrice = totalPrice * taxField.percentage;
+                int totalPriceInt = (int) Math.round(totalPrice); //Runder enten op eller ned
+                player.getAccount().setBalance(player.getAccount().getBalance() - totalPriceInt, player.getName());
             }
-            else if(answer.equals("200kr")){
+            else if(answer.equals(pay200)){
                 player.getAccount().setBalance(player.getAccount().getBalance() - 200, player.getName());
+            }
+            else if(answer.equals(pay100)){
+                player.getAccount().setBalance(player.getAccount().getBalance() - 100, player.getName());
             }
         }
         else if(field instanceof VisitJailField){
