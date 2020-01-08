@@ -24,11 +24,17 @@ public class Player {
         return account;
     }
 
+    public void setInJail(boolean inJail){
+        this.inJail = inJail;
+    }
     public boolean isInJail() {
         return inJail;
     }
 
-    public boolean isHasEscapeJailCard() {
+    public void setHasEscapeJailCard(boolean hasEscapeJailCard) {
+        this.hasEscapeJailCard = hasEscapeJailCard;
+    }
+    public boolean hasEscapeJailCard() {
         return hasEscapeJailCard;
     }
 

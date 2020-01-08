@@ -54,7 +54,8 @@ public class FieldController {
             InterfaceGUI.initGUIFields(fields);
         }
 
-    public int getFieldCount() {
-        return fields.length;
+    public Field[] getFields() {
+        return fields;
     }
+
 }

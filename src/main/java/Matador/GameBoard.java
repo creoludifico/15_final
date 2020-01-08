@@ -21,7 +21,7 @@ public class GameBoard {
         fieldController = new FieldController();
 
         //Spillerne oprettes
-        playerController = new PlayerController();
+        playerController = new PlayerController(fieldController);
     }
 
     public void runGame(){
@@ -29,12 +29,15 @@ public class GameBoard {
         int currentPlayerIndex = 0;
         while(!gameOver){
             playerController.setCurrentPlayer(currentPlayerIndex);
+            Player currentPlayer = playerController.getCurrentPlayer();
 
             raffleCup.awaitShakeTheRaffleCup();
-            playerController.movePlayerOnField(playerController.getCurrentPlayer(), raffleCup.getTotalValue(), fieldController.getFieldCount());
+            playerController.movePlayerOnField(currentPlayer, raffleCup.getTotalValue());
+
+
 
             currentPlayerIndex++;
-            if(currentPlayerIndex == playerController.getPlayerCount()){
+            if(currentPlayerIndex == playerController.getPlayers().length){
                 currentPlayerIndex = 0;
             }
         }

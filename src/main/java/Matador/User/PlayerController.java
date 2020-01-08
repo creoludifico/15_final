@@ -2,12 +2,14 @@ package Matador.User;
 
 import GUI.InterfaceGUI;
 import Matador.Field.Field;
+import Matador.Field.FieldController;
 
 public class PlayerController {
     private Player[] players;
     private Player currentPlayer;
+    private FieldController fieldController;
 
-    public PlayerController(){
+    public PlayerController(FieldController fieldController){
         int playerCount = 0;
         while(playerCount < 3 || playerCount > 6){
             playerCount = InterfaceGUI.awaitUserIntegerInput("Indtast antal spillere mellem 3-6", 3, 6);
@@ -45,6 +47,11 @@ public class PlayerController {
         for(Player player : players){
             player.setFieldIndex(0);
         }
+        this.fieldController = fieldController;
+    }
+
+    public Player[] getPlayers(){
+        return players;
     }
 
     public void setCurrentPlayer(int currentPlayerIndex) {
@@ -56,16 +63,10 @@ public class PlayerController {
     public Player getPlayer(int playerIndex) {
         return players[playerIndex];
     }
-    public Player[] getPlayers(){
-        return players;
-    }
-    public int getPlayerCount(){
-        return players.length;
-    }
 
-    public void movePlayerOnField(Player player, int diceValues, int fieldCount){
+    public void movePlayerOnField(Player player, int diceValues){
         int fieldIndex = player.getFieldIndex() + diceValues;
-        player.setFieldIndex(fieldIndex % fieldCount);
+        player.setFieldIndex(fieldIndex % fieldController.getFields().length);
     }
 
 }
