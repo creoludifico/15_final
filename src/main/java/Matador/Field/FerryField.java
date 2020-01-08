@@ -10,4 +10,8 @@ public class FerryField extends OwnableField {
     public FerryField(String title, int price, int mortgage) {
         super(title, "Pris: " + price, price, mortgage);
     }
+
+    public int getRent(int index){
+        return rent[index];
+    }
 }
