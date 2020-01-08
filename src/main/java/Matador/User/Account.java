@@ -8,8 +8,8 @@ public class Account {
     public Account(int balance){
         this.balance = balance;
     }
-    public void setBalance(int balance, String name){
-        this.balance = balance;
+    public void modifyBalance(int appendedBalance, String name){
+        this.balance += appendedBalance;
         InterfaceGUI.setGuiPlayerBalance(name, this.balance);
     }
     public int getBalance() {

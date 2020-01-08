@@ -69,7 +69,7 @@ public class GameBoard {
                     currentPlayer.setInJail(false);
                 }
                 else if(action.equals(pay100String)){
-                    currentPlayer.getAccount().setBalance(currentPlayer.getAccount().getBalance() - 100, currentPlayer.getName());
+                    currentPlayer.getAccount().modifyBalance(-100, currentPlayer.getName());
                     currentPlayer.setInJail(false);
                 }
                 else if(action.equals(raffleDicesString)){

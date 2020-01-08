@@ -75,7 +75,7 @@ public class FieldController {
 
         if(field instanceof BeerField){
             BeerField beerField = (BeerField) field;
-            ownableFieldAction(player, fieldIndex);
+            ownableFieldAction(player, fieldIndex, beerField);
         }
         else if(field instanceof ChanceField){
             //ChanceField chanceField = (ChanceField) field; //Feltet i sig selv skal ikke bruges her.
@@ -83,7 +83,7 @@ public class FieldController {
         }
         else if(field instanceof FerryField){
             FerryField ferryField = (FerryField) field;
-            ownableFieldAction(player, fieldIndex);
+            ownableFieldAction(player, fieldIndex, ferryField);
         }
         else if(field instanceof JailField){
             //JailField jailField = (JailField) field; //Feltet i sig selv skal ikke bruges her.
@@ -98,7 +98,7 @@ public class FieldController {
         }
         else if(field instanceof StreetField){
             StreetField streetField = (StreetField) field;
-            ownableFieldAction(player, fieldIndex);
+            ownableFieldAction(player, fieldIndex, streetField);
         }
         else if(field instanceof TaxField){
             TaxField taxField = (TaxField) field;
@@ -146,13 +146,13 @@ public class FieldController {
                 }
                 totalPrice = totalPrice * taxField.percentage;
                 int totalPriceInt = (int) Math.round(totalPrice); //Runder enten op eller ned
-                player.getAccount().setBalance(player.getAccount().getBalance() - totalPriceInt, player.getName());
+                player.getAccount().modifyBalance(-totalPriceInt, player.getName());
             }
             else if(answer.equals(pay200)){
-                player.getAccount().setBalance(player.getAccount().getBalance() - 200, player.getName());
+                player.getAccount().modifyBalance(-200, player.getName());
             }
             else if(answer.equals(pay100)){
-                player.getAccount().setBalance(player.getAccount().getBalance() - 100, player.getName());
+                player.getAccount().modifyBalance(-100, player.getName());
             }
         }
         else if(field instanceof VisitJailField){
@@ -164,14 +164,31 @@ public class FieldController {
         Field field = this.getFields()[fieldIndex];
         OwnableField ownableField = (OwnableField) field;
         if(ownableField.getOwner() == null){
+            String yes = "Ja";
+            String no = "Nej";
             String[] buttons = new String[]{
-                    "Ja", "Nej"
+                    yes, no
             };
             String answer = InterfaceGUI.awaitUserButtonsClicked("Denne grund er ikke købt. Vil du købe?", player.getName(), buttons);
-            if(answer.equals("Ja")){
-                player.getAccount().setBalance(player.getAccount().getBalance() - ownableField.getPrice(), player.getName());
+            if(answer.equals(yes)){
+                player.getAccount().modifyBalance(-ownableField.getPrice(), player.getName());
                 ownableField.setOwner(player, fieldIndex);
             }
+            else if(answer.equals(no)){
+                InterfaceGUI.showMessage("Der skal nu bydes på grunden: " + ownableField.getTitle());
+                //Auction
+            }
         }
+    }
+    private void ownableFieldAction(Player player, int fieldIndex, BeerField beerField){
+        ownableFieldAction(player, fieldIndex);
+        if(beerField.getOwner() != player){
+        }
+    }
+    private void ownableFieldAction(Player player, int fieldIndex, FerryField ferryField){
+        ownableFieldAction(player, fieldIndex);
+    }
+    private void ownableFieldAction(Player player, int fieldIndex, StreetField streetField){
+        ownableFieldAction(player, fieldIndex);
     }
 }

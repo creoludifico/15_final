@@ -75,7 +75,7 @@ public class PlayerController {
     public void movePlayerOnField(Player player, int diceValues){
         int fieldIndex = player.getFieldIndex() + diceValues;
         if(fieldIndex > fieldController.getFields().length || player.isBonusOnNextRaffle()){
-            player.getAccount().setBalance(player.getAccount().getBalance() + 200, player.getName());
+            player.getAccount().modifyBalance(200, player.getName());
             player.setBonusOnNextRaffle(false);
         }
         if (fieldIndex == fieldController.getFields().length){
