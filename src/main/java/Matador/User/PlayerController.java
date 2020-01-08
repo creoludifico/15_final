@@ -5,6 +5,7 @@ import Matador.Field.Field;
 
 public class PlayerController {
     private Player[] players;
+    private Player currentPlayer;
 
     public PlayerController(){
         int playerCount = 0;
@@ -46,8 +47,17 @@ public class PlayerController {
         }
     }
 
-    public Player getPlayer(int index){
-        return players[index];
+    public void setCurrentPlayer(int currentPlayerIndex) {
+        currentPlayer = players[currentPlayerIndex];
+    }
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+    public Player getPlayer(int playerIndex) {
+        return players[playerIndex];
+    }
+    public Player[] getPlayers(){
+        return players;
     }
     public int getPlayerCount(){
         return players.length;
@@ -57,4 +67,5 @@ public class PlayerController {
         int fieldIndex = player.getFieldIndex() + diceValues;
         player.setFieldIndex(fieldIndex % fieldCount);
     }
+
 }

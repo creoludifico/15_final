@@ -28,10 +28,10 @@ public class GameBoard {
         RaffleCup raffleCup = new RaffleCup();
         int currentPlayerIndex = 0;
         while(!gameOver){
-            Player currentPlayer = playerController.getPlayer(currentPlayerIndex);
+            playerController.setCurrentPlayer(currentPlayerIndex);
 
             raffleCup.awaitShakeTheRaffleCup();
-            playerController.movePlayerOnField(currentPlayer, raffleCup.getTotalValue(), fieldController.getFieldCount());
+            playerController.movePlayerOnField(playerController.getCurrentPlayer(), raffleCup.getTotalValue(), fieldController.getFieldCount());
 
             currentPlayerIndex++;
             if(currentPlayerIndex == playerController.getPlayerCount()){
