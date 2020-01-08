@@ -1,7 +1,10 @@
 package Matador.ChanceCard;
+import java.util.Arrays;
+import java.util.Random;
 
 public class ChanceCardController {
-    ChanceCard[] chanceCards;
+    private ChanceCard[] chanceCards;
+
 
     public ChanceCardController(){
         chanceCards = new ChanceCard[] {
@@ -35,5 +38,30 @@ public class ChanceCardController {
                 new CashInOutCard("Efter auktionen på Assistenshuset, hvor de havde pantsat Deres tøj, modtager De ekstra kr. 108.", 108),
                 new CashInOutCard("Deres præmieobligation er kommet ud. De modtager kr. 100 af banken.", 100)
         };
+        shuffleCards();
+
+    }
+
+    public ChanceCard[] getDeck(){
+        return chanceCards;
+    }
+
+    public void shuffleCards(){
+        Random rand = new Random();
+        for(int i = 0; i < chanceCards.length;i++){
+            int indexToSwap = rand.nextInt(chanceCards.length);
+            ChanceCard temp = chanceCards[indexToSwap];
+            chanceCards[indexToSwap] = chanceCards[i];
+            chanceCards[i] = temp;
+        }
+    }
+
+    public ChanceCard pickCard(){
+        ChanceCard temp = chanceCards[0];
+        for(int i = 1; i < chanceCards.length;i++){
+            chanceCards[i-1] = chanceCards[i];
+        }
+        chanceCards[chanceCards.length-1] = temp;
+        return chanceCards[0];
     }
 }
