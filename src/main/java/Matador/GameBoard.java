@@ -78,11 +78,11 @@ public class GameBoard {
                     raffleCup.shakeTheRaffleCup();
                     if(raffleCup.isSameDie()){
                         currentPlayer.setInJail(false);
+                        playerShakeTheRaffleCupFromJail = true;
                     }else{
                         currentPlayer.setJailForRounds(currentPlayer.getJailForRounds() + 1);
                         InterfaceGUI.showMessage("Desværre, turen går videre", currentPlayer.getName());
                     }
-                    playerShakeTheRaffleCupFromJail = true;
                 }
 
                 if(!currentPlayer.isInJail()){
@@ -105,6 +105,7 @@ public class GameBoard {
             if (raffleCup.isSameDie()) {
                 isSameDieCounter++;
                 if(isSameDieCounter > 2){
+                    currentPlayer.setFieldIndex(10);
                     currentPlayer.setInJail(true);
                     isSameDieCounter = 0;
                     currentPlayerIndex++;
