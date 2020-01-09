@@ -183,7 +183,7 @@ public class FieldController {
     }
     private void ownableFieldAction(Player player, int fieldIndex, BeerField beerField, RaffleCup raffleCup){
         ownableFieldAction(player, fieldIndex);
-        if(beerField.getOwner() != player){
+        if(beerField.getOwner() != player && beerField.getOwner() != null){
             InterfaceGUI.showMessage(beerField.getOwner().getName() + " ejer bryggeriet og der skal nu betales til vedkommende.", player.getName());
 
             int rent = raffleCup.getTotalValue();
@@ -213,7 +213,7 @@ public class FieldController {
     }
     private void ownableFieldAction(Player player, int fieldIndex, FerryField ferryField){
         ownableFieldAction(player, fieldIndex);
-        if(ferryField.getOwner() != player){
+        if(ferryField.getOwner() != player && ferryField.getOwner() != null){
             InterfaceGUI.showMessage(ferryField.getOwner().getName() + " ejer færgen og der skal nu betales til vedkommende.", player.getName());
 
             int sameOwnerCounter = 0;
