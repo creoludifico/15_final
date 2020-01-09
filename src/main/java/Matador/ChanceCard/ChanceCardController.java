@@ -75,58 +75,68 @@ public class ChanceCardController {
             chanceCards[i - 1] = chanceCards[i];
         }
         chanceCards[chanceCards.length - 1] = temp;
-        ChanceCard pickedCard = chanceCards[0];
         return chanceCards[0];
     }
 
     public void action (Player player){
-        ChanceCard pickedCard = new CashInFromOtherPlayersCard(player.getName()); //pickCard();
+        ChanceCard pickedCard = pickCard();
         String cardName = pickedCard.getName();
         InterfaceGUI.setGuiCard(cardName);
-        InterfaceGUI.showMessage(player.getName() + ": Du har trukket et chancekort...");
+        InterfaceGUI.showMessage(player.getName() + ": Du har trukket chancekortet \"" + cardName + "\"");
+
         // Bonus hvis given total værdi
         if (pickedCard instanceof CashInDependentAssetsCard) {
             CashInDependentAssetsCard cidac = (CashInDependentAssetsCard) pickedCard;
             if (collectAsssets(player) < cidac.getMaxCashLimit()) {
                 player.getAccount().modifyBalance(cidac.getCash(), player.getName());
+                InterfaceGUI.showMessage(player.getName() + ": Du besidder under " + cidac.getMaxCashLimit() + " i samlede værdier. Derfor modtager du " + cidac.getCash() + " i Matador Legatet");
+            } else {
+                InterfaceGUI.showMessage(player.getName() + ": Du besidder for mange aktiver til at modtage Matador Legatet");
             }
         }
 
         // Alle spiller betaler 25kr til spilleren
         else if (pickedCard instanceof CashInFromOtherPlayersCard) {
             CashInFromOtherPlayersCard cifopc = (CashInFromOtherPlayersCard) pickedCard;
+            int totalMe = 0;
             for (int i = 0; i < playerController.getPlayers().length; i++) {
                 if (playerController.getPlayer(i) != player) {
                     playerController.getPlayer(i).getAccount().modifyBalance(-cifopc.getCash(), playerController.getPlayer(i).getName());
                 } else {
-                    player.getAccount().modifyBalance((playerController.getPlayers().length - 1) * cifopc.getCash(), player.getName());
+                    totalMe += (playerController.getPlayers().length - 1) * cifopc.getCash();
+                    player.getAccount().modifyBalance(totalMe, player.getName());
                 }
             }
+            InterfaceGUI.showMessage(player.getName() + ": Du har modtaget sammenlagt " + totalMe + " og de andre spillere har mistet hver " + cifopc.getCash());
         }
 
         // Betal eller modtag penge
         else if (pickedCard instanceof CashInOutCard) {
             CashInOutCard cioc = (CashInOutCard) pickedCard;
             player.getAccount().modifyBalance(cioc.getCash(), player.getName());
+            InterfaceGUI.showMessage( player.getName() + (cioc.getCash() < 0 ? ": Du har betalt "  + (-cioc.getCash()) : ": Du har indkasseret " + cioc.getCash()));
         }
 
         // Betal penge udfra antal huse og hoteller
         else if (pickedCard instanceof CashOutDependentBuildingCard) {
             CashOutDependentBuildingCard codbc = (CashOutDependentBuildingCard) pickedCard;
             Field[] fields = fieldController.getFields();
+            int total = 0;
             for (int index = 0; index < fields.length; index++) {
                 Field field = fields[index];
                 if (field instanceof StreetField) {
                     StreetField streetField = (StreetField) field;
                     if (streetField.getOwner() == player) {
                         if (streetField.getBuildings() <= 4) {
-                            player.getAccount().modifyBalance(codbc.getHousePrice(), player.getName());
+                            total += -codbc.getHousePrice() * streetField.getBuildings();
                         } else if (streetField.getBuildings() > 4) {
-                            player.getAccount().modifyBalance(codbc.getHotelPrice(), player.getName());
+                            total += -codbc.getHotelPrice();
                         }
                     }
                 }
             }
+            player.getAccount().modifyBalance(total, player.getName());
+            InterfaceGUI.showMessage(player.getName() + ": Din samlede beskatning er på " + total);
 
             // Ryk til nærmeste færge + dobbelt leje hvis ejet
         } else if (pickedCard instanceof FerryCard) {
@@ -146,21 +156,32 @@ public class ChanceCardController {
             if(fieldController.getFields()[playerFieldIndex] instanceof FerryField) {
                 FerryField field = (FerryField) fieldController.getFields()[playerFieldIndex];
                 if(field.getOwner() != null) {
-                    player.getAccount().modifyBalance(-field.getRent(getFerries(player)), player.getName());
+                    player.getAccount().modifyBalance(-field.getRent(getFerries(player)) * 2, player.getName());
+                    InterfaceGUI.showMessage(player.getName() + ": Du er landet på " + field.getTitle() + ", som er ejet af " + field.getOwner().getName() + ". Du skal derfor betale leje");
+                } else {
+                    fieldController.fieldAction(player, playerFieldIndex, null);
                 }
             }
+            // Ryk til given position
         } else if (pickedCard instanceof MoveAbsoluteCard){
             MoveAbsoluteCard mac = (MoveAbsoluteCard) pickedCard;
             player.setFieldIndex(mac.getFieldIndex());
+            InterfaceGUI.showMessage(player.getName() + ": Du er flyttet til " + fieldController.getFields()[mac.getFieldIndex()].getTitle());
+            // Ryk given felter bagud
         } else if (pickedCard instanceof MoveBackwardsCard) {
             MoveBackwardsCard mbc = (MoveBackwardsCard) pickedCard;
             player.setFieldIndex((player.getFieldIndex() - mbc.getBackward()) % fieldController.getFields().length);
+            InterfaceGUI.showMessage(player.getName() + ": Du er flyttet 3 tilbage til " + fieldController.getFields()[player.getFieldIndex()].getTitle());
+            // Ryk i fængsel
         } else if (pickedCard instanceof MoveToJailCard) {
             MoveToJailCard mtjc = (MoveToJailCard) pickedCard;
             player.setFieldIndex(mtjc.getFieldIndex());
             player.setInJail(true);
+            InterfaceGUI.showMessage(player.getName() + ": Du er nu i fængsel");
+            // Gratis ud af fængsel kort
         } else if (pickedCard instanceof PardonCard) {
             player.setHasEscapeJailCard(true);
+            InterfaceGUI.showMessage(player.getName() + ": Du er nu i besiddelse af Løsladelseskortet");
         }
     }
 
@@ -180,6 +201,7 @@ public class ChanceCardController {
                 }
             }
         }
+        total += player.getAccount().getBalance();
         return total;
     }
 
