@@ -49,6 +49,8 @@ public class GameBoard {
         boolean playerShakeTheRaffleCupFromJail = false;
         boolean dieTurnIsDone = false;
         while(!gameOver){
+            InterfaceGUI.hideGuiCard();
+
             playerController.setCurrentPlayer(currentPlayerIndex);
             Player currentPlayer = playerController.getCurrentPlayer();
             if(currentPlayer.isInJail()){

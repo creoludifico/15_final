@@ -2,6 +2,7 @@ package GUI;
 
 import Matador.Field.Field;
 import Matador.Field.StreetField;
+import gui_codebehind.GUI_Center;
 import gui_fields.*;
 import gui_main.GUI;
 
@@ -63,6 +64,13 @@ public class InterfaceGUI {
         gui.showMessage("PERSON: " + name + " - " + msg);
     }
 
+    public static void setGuiCard(String text) {
+        gui.displayChanceCard(text);
+    }
+
+    public static void hideGuiCard() {
+        gui.displayChanceCard("");
+    }
 
     public static String awaitUserStringInput (String msg){
         return gui.getUserString(msg);

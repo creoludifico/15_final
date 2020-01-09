@@ -1,4 +1,5 @@
 package Matador.ChanceCard;
+import GUI.InterfaceGUI;
 import Matador.Field.*;
 import Matador.User.Player;
 import Matador.User.PlayerController;
@@ -79,7 +80,10 @@ public class ChanceCardController {
     }
 
     public void action (Player player){
-        ChanceCard pickedCard = pickCard();
+        ChanceCard pickedCard = new CashInFromOtherPlayersCard(player.getName()); //pickCard();
+        String cardName = pickedCard.getName();
+        InterfaceGUI.setGuiCard(cardName);
+        InterfaceGUI.showMessage(player.getName() + ": Du har trukket et chancekort...");
         // Bonus hvis given total værdi
         if (pickedCard instanceof CashInDependentAssetsCard) {
             CashInDependentAssetsCard cidac = (CashInDependentAssetsCard) pickedCard;
@@ -93,7 +97,7 @@ public class ChanceCardController {
             CashInFromOtherPlayersCard cifopc = (CashInFromOtherPlayersCard) pickedCard;
             for (int i = 0; i < playerController.getPlayers().length; i++) {
                 if (playerController.getPlayer(i) != player) {
-                    player.getAccount().modifyBalance(-cifopc.getCash(), player.getName());
+                    playerController.getPlayer(i).getAccount().modifyBalance(-cifopc.getCash(), playerController.getPlayer(i).getName());
                 } else {
                     player.getAccount().modifyBalance((playerController.getPlayers().length - 1) * cifopc.getCash(), player.getName());
                 }
@@ -145,6 +149,18 @@ public class ChanceCardController {
                     player.getAccount().modifyBalance(-field.getRent(getFerries(player)), player.getName());
                 }
             }
+        } else if (pickedCard instanceof MoveAbsoluteCard){
+            MoveAbsoluteCard mac = (MoveAbsoluteCard) pickedCard;
+            player.setFieldIndex(mac.getFieldIndex());
+        } else if (pickedCard instanceof MoveBackwardsCard) {
+            MoveBackwardsCard mbc = (MoveBackwardsCard) pickedCard;
+            player.setFieldIndex((player.getFieldIndex() - mbc.getBackward()) % fieldController.getFields().length);
+        } else if (pickedCard instanceof MoveToJailCard) {
+            MoveToJailCard mtjc = (MoveToJailCard) pickedCard;
+            player.setFieldIndex(mtjc.getFieldIndex());
+            player.setInJail(true);
+        } else if (pickedCard instanceof PardonCard) {
+            player.setHasEscapeJailCard(true);
         }
     }
 
