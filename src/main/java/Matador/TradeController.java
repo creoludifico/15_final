@@ -21,6 +21,10 @@ public class TradeController {
     public void auction(OwnableField ownableField) {
     }
 
+    public void pawnField(Player player){
+
+    }
+
     public void sellHouse(Player player) {
     }
 

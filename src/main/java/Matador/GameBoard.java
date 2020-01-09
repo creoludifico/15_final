@@ -126,6 +126,7 @@ public class GameBoard {
             }
             if(dieTurnIsDone)
             {
+                String pawnField = "Pantsæt grund";
                 String sellHouse =  "Salg af huse";
                 String buyHouse =  "Køb af huse";
                 String trading =  "Forhandle med en anden spiller";
@@ -142,6 +143,9 @@ public class GameBoard {
                 {
 
                     String action = InterfaceGUI.awaitUserButtonsClicked("Du har nu følgende muligheder: ", currentPlayer.getName(), buttonsForEndActions);
+                    if(action.equals(pawnField)){
+                        tradeController.pawnField(currentPlayer);
+                    }
                     if(action.equals(sellHouse)){
                         tradeController.sellHouse(currentPlayer);
                     }
