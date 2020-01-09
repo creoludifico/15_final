@@ -235,7 +235,7 @@ public class FieldController {
                     }
                 }
             }
-            int rent = ferryField.getRent(sameOwnerCounter-1);
+            int rent = ferryField.getRent(sameOwnerCounter);
             InterfaceGUI.showMessage(ferryField.getOwner().getName() + " ejer " + sameOwnerCounter + " færger.", player.getName());
 
             InterfaceGUI.showMessage("Du skal betale " + rent, player.getName());

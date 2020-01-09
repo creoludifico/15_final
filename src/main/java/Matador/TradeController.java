@@ -77,6 +77,7 @@ public class TradeController {
         StreetField[] buildingsStreetFields = fieldController.getOwnerOfStreetBuildingsArray(player);
         if (buildingsStreetFields.length == 0) {
             InterfaceGUI.showMessage(player.getName() + ": Du har ingen byggegrunde med bygninger på");
+            return;
         }
         String[] buildingsStreetNames = fieldController.transformToStringArray(buildingsStreetFields);
         String selection = InterfaceGUI.awaitDropDownSelected("Vælg det felt du vil sælge et hus eller et hotel fra", player.getName(), buildingsStreetNames);
