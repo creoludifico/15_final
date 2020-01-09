@@ -179,10 +179,11 @@ public class FieldController {
             if(answer.equals(yes)){
                 if(player.getAccount().getBalance() < ownableField.getPrice())
                 {
-                    InterfaceGUI.showMessage("Du har ikke råd til at købe den grund.");
+                    InterfaceGUI.showMessage("Du har ikke råd til at købe den grund.", player.getName());
+                } else {
+                    playerController.modifyBalance(-ownableField.getPrice(), player);
+                    ownableField.setOwner(player, fieldIndex);
                 }
-                playerController.modifyBalance(-ownableField.getPrice(), player);
-                ownableField.setOwner(player, fieldIndex);
             }
             if(answer.equals(no) || player.getAccount().getBalance() < ownableField.getPrice()){
                 tradeController.auction(ownableField, fieldIndex);
