@@ -4,6 +4,7 @@ import GUI.InterfaceGUI;
 import Matador.Field.Field;
 import Matador.Field.FieldController;
 import Matador.Field.OwnableField;
+import Matador.Field.StreetField;
 import Matador.User.Player;
 import Matador.User.PlayerController;
 
@@ -75,7 +76,67 @@ public class TradeController {
     public void sellHouse(Player player) {
     }
 
+    private OwnableField fieldForName(String name) {
+        for (Field field: fieldController.getFields()) {
+            if (name.equals(field.getTitle()))
+                return (OwnableField)field;
+        }
+        return null;
+    }
+
+    private boolean ownsEntireGroup (StreetField[] group, Player player) {
+        boolean result = true;
+        for (StreetField street: group) {
+            if (street.getOwner() != player)
+                result = false;
+        }
+        return result;
+    }
+
+    private int maxHousesGroup (StreetField[] group, Player player) {
+        int result = 0;
+        for (StreetField street : group) {
+            result = Math.max(result, street.getBuildings());
+        }
+        return result;
+    }
+
+    private int minHousesGroup (StreetField[] group, Player player) {
+        int result = 5;
+        for (StreetField street : group) {
+            result = Math.min(result, street.getBuildings());
+        }
+        return result;
+    }
+
+    private void updateBuildings (StreetField streetField) {
+        int index = fieldController.getFieldIndex(streetField);
+        if(streetField.getBuildings() == 5) {
+            InterfaceGUI.setFieldHouses(index, 0);
+            InterfaceGUI.setFieldHotel(index,true);
+        } else {
+            InterfaceGUI.setFieldHotel(index,false);
+            InterfaceGUI.setFieldHouses(index, streetField.getBuildings());
+        }
+    }
+
     public void buyHouse(Player player) {
+        StreetField[] ownedStreetFields = fieldController.getOwnerOfStreetFieldsArray(player);
+        if (ownedStreetFields.length == 0) {
+            InterfaceGUI.showMessage(player.getName() + ": Du har ingen bygninger");
+        }
+        String[] ownedStreetNames = fieldController.transformToStringArray(ownedStreetFields);
+        String selection = InterfaceGUI.awaitDropDownSelected(player.getName() + ": Vælg det felt du vil bygge et huse eller hotel på.", player.getName(), ownedStreetNames);
+        StreetField selectedField = (StreetField)fieldForName(selection);
+        StreetField[] groupArray = fieldController.getStreetGroupArray(selectedField.getGroupName());
+        if (ownsEntireGroup(groupArray, player) && selectedField.getBuildings() == minHousesGroup(groupArray, player) && selectedField.getBuildings() < 5) {
+            InterfaceGUI.showMessage(player.getName() + ": Du kan godt bygge et hus på feltet " + selectedField.getTitle());
+            playerController.modifyBalance(selectedField.getBuildingPrice(), player);
+            selectedField.setBuildings(selectedField.getBuildings() + 1);
+            updateBuildings(selectedField);
+        } else {
+            InterfaceGUI.showMessage(player.getName() + ": Du kan ikke bygge på feltet");
+        }
     }
 
     public void tradeWithPlayer(Player player1) {

@@ -294,6 +294,51 @@ public class FieldController {
         return ownerOfFieldsArray;
     }
 
+    public StreetField[] getOwnerOfStreetFieldsArray(Player player){
+        int count = 0;
+        for(Field field : fields){
+            if(field instanceof StreetField){
+                OwnableField ownableField = (OwnableField) field;
+                if(ownableField.getOwner() == player){
+                    count++;
+                }
+            }
+        }
+        StreetField[] result = new StreetField[count];
+        int index = 0;
+        for(int i = 0;i<fields.length;i++){
+            if(fields[i] instanceof StreetField){
+                StreetField streetField = (StreetField) fields[i];
+                if(streetField.getOwner() == player){
+                    result[index++] = streetField;
+                }
+            }
+        }
+        return result;
+    }
+    public StreetField[] getStreetGroupArray(String groupColor) {
+        int count = 0;
+        for(Field field : fields) {
+            if (field instanceof StreetField) {
+                StreetField streetField = (StreetField) field;
+                if (streetField.getGroupName().equals(groupColor)) {
+                    count++;
+                }
+            }
+        }
+        int index = 0;
+        StreetField[] result = new StreetField[count];
+        for(Field field : fields) {
+            if (field instanceof StreetField) {
+                StreetField streetField = (StreetField) field;
+                if (streetField.getGroupName().equals(groupColor)) {
+                    result[index++] = streetField;
+                }
+            }
+        }
+        return result;
+    }
+
     public String[] transformToStringArray(Field[] fields){
         String[] stringArray = new String[fields.length];
         for(int i = 0;i<fields.length;i++){

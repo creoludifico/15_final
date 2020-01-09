@@ -136,4 +136,18 @@ public class InterfaceGUI {
         }
         return guiPlayer;
     }
+
+    public static void setFieldHouses(int fieldIndex, int houseCount) {
+        GUI_Field field = guiFields[fieldIndex];
+        if (field instanceof GUI_Street) {
+            ((GUI_Street)field).setHouses(houseCount);
+        }
+    }
+
+    public static void setFieldHotel(int fieldIndex, boolean hasHotel) {
+        GUI_Field field = guiFields[fieldIndex];
+        if (field instanceof GUI_Street) {
+            ((GUI_Street)field).setHotel(hasHotel);
+        }
+    }
 }
