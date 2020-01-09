@@ -41,6 +41,7 @@ public class GameBoard {
         RaffleCup raffleCup = new RaffleCup();
         int currentPlayerIndex = 0;
         int isSameDieCounter = 0;
+        boolean playerShakeTheRaffleCupFromJail = false;
         while(!gameOver){
             playerController.setCurrentPlayer(currentPlayerIndex);
             Player currentPlayer = playerController.getCurrentPlayer();
@@ -78,24 +79,29 @@ public class GameBoard {
                     if(raffleCup.isSameDie()){
                         currentPlayer.setInJail(false);
                     }else{
+                        currentPlayer.setJailForRounds(currentPlayer.getJailForRounds() + 1);
                         InterfaceGUI.showMessage("Desværre, turen går videre", currentPlayer.getName());
                     }
+                    playerShakeTheRaffleCupFromJail = true;
                 }
 
                 if(!currentPlayer.isInJail()){
-                    InterfaceGUI.showMessage("Du er fri af fængslet og må nu slå normalt", currentPlayer.getName());
+                    InterfaceGUI.showMessage("Du er fri af fængslet", currentPlayer.getName());
                 }
             }
 
             if(!currentPlayer.isInJail()){
 
-                raffleCup.awaitShakeTheRaffleCup(currentPlayer.getName());
+                if(!playerShakeTheRaffleCupFromJail) {
+                    raffleCup.awaitShakeTheRaffleCup(currentPlayer.getName());
+                }
                 playerController.movePlayerOnField(currentPlayer, raffleCup.getTotalValue());
 
                 int currentPlayerFieldIndex = playerController.getCurrentPlayer().getFieldIndex();
                 fieldController.fieldAction(currentPlayer, currentPlayerFieldIndex, raffleCup);
             }
 
+            playerShakeTheRaffleCupFromJail = false;
             if (raffleCup.isSameDie()) {
                 isSameDieCounter++;
                 if(isSameDieCounter > 2){

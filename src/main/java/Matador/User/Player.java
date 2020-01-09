@@ -10,6 +10,8 @@ public class Player {
     private boolean hasEscapeJailCard = false;
     private boolean bonusOnNextRaffle = false;
 
+    private int jailForRounds = 0;
+
     private int fieldIndex = 0;
 
     public Player(String name, Account account){
@@ -53,5 +55,13 @@ public class Player {
 
     public void setBonusOnNextRaffle(boolean bonusOnNextRaffle) {
         this.bonusOnNextRaffle = bonusOnNextRaffle;
+    }
+
+    public int getJailForRounds() {
+        return jailForRounds;
+    }
+
+    public void setJailForRounds(int jailForRounds) {
+        this.jailForRounds = jailForRounds;
     }
 }
