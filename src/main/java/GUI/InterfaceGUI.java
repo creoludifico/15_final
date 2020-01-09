@@ -150,4 +150,25 @@ public class InterfaceGUI {
             ((GUI_Street)field).setHotel(hasHotel);
         }
     }
+
+
+    public static void removeGuiPlayer(String name, int[] fieldIndexes){
+        GUI_Player[] guiPlayersNewTemp = new GUI_Player[guiPlayers.length-1];
+        int i = 0;
+        for(GUI_Player guiPlayer : guiPlayers){
+            if(!guiPlayer.getName().equals(name)){
+                guiPlayersNewTemp[i] = guiPlayer;
+                i++;
+            }
+        }
+        guiPlayers = guiPlayersNewTemp;
+
+        for(int fieldIndex : fieldIndexes){
+            InterfaceGUI.setGUIFieldOwner(null, fieldIndex);
+        }
+    }
+
+    public static void shutDown(){
+        gui.close();
+    }
 }

@@ -14,8 +14,6 @@ public class GameBoard {
     private ChanceCardController chanceCardController;
     private TradeController tradeController;
 
-    private boolean gameOver = false;
-
     public GameBoard(){
         //Opsætter gui boardet
         InterfaceGUI.initGUI();
@@ -37,7 +35,7 @@ public class GameBoard {
         fieldController.setChanceCardController(chanceCardController);
         fieldController.setTradeController(tradeController);
         playerController.setFieldController(fieldController);
-        playerController.setChanceCardController(chanceCardController);
+        playerController.setTradeController(tradeController);
         chanceCardController.setPlayerController(playerController);
         chanceCardController.setFieldController(fieldController);
         tradeController.setPlayerController(playerController);
@@ -50,7 +48,7 @@ public class GameBoard {
         int isSameDieCounter = 0;
         boolean playerShakeTheRaffleCupFromJail = false;
         boolean dieTurnIsDone = false;
-        while(!gameOver){
+        while(true){
             InterfaceGUI.hideGuiCard();
 
             playerController.setCurrentPlayer(currentPlayerIndex);
@@ -139,7 +137,7 @@ public class GameBoard {
                         trading,
                         endTurn
                 };
-                while (dieTurnIsDone)
+                while (true)
                 {
                     String action = InterfaceGUI.awaitUserButtonsClicked("Du har nu følgende muligheder: ", currentPlayer.getName(), buttonsForEndActions);
                     if(action.equals(pawnField)){
@@ -159,11 +157,11 @@ public class GameBoard {
                     if(action.equals(endTurn))
                     {
                         dieTurnIsDone = false;
+                        break;
                     }
                 }
                 currentPlayerIndex++;
             }
-
             if(currentPlayerIndex == playerController.getPlayers().length){
                 currentPlayerIndex = 0;
             }

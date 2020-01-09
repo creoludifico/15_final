@@ -20,7 +20,8 @@ public abstract class OwnableField extends Field {
 
     public void setOwner(Player owner, int fieldIndex) {
         this.owner = owner;
-        InterfaceGUI.setGUIFieldOwner(owner.getName(), fieldIndex);
+        InterfaceGUI.setGUIFieldOwner((owner == null ? "" : owner.getName()), fieldIndex);
+
     }
 
     public Boolean getPawned() {

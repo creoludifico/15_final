@@ -87,7 +87,7 @@ public class ChanceCardController {
         // Bonus hvis given total værdi
         if (pickedCard instanceof CashInDependentAssetsCard) {
             CashInDependentAssetsCard cidac = (CashInDependentAssetsCard) pickedCard;
-            if (collectAsssets(player) < cidac.getMaxCashLimit()) {
+            if (playerController.collectAsssets(player) < cidac.getMaxCashLimit()) {
                 playerController.modifyBalance(cidac.getCash(), player);
                 InterfaceGUI.showMessage(player.getName() + ": Du besidder under " + cidac.getMaxCashLimit() + " i samlede værdier. Derfor modtager du " + cidac.getCash() + " i Matador Legatet");
             } else {
@@ -184,26 +184,6 @@ public class ChanceCardController {
             player.setHasEscapeJailCard(true);
             InterfaceGUI.showMessage(player.getName() + ": Du er nu i besiddelse af Løsladelseskortet");
         }
-    }
-
-    private int collectAsssets (Player player){
-        Field[] fields = fieldController.getFields();
-        int total = 0;
-        for (int index = 0; index < fields.length; index++) {
-            Field field = fields[index];
-            if (field instanceof OwnableField) {
-                OwnableField ownableField = (OwnableField) field;
-                if (ownableField.getOwner() == player) {
-                    total += ownableField.getPrice();
-                    if (ownableField instanceof StreetField) {
-                        StreetField streetField = (StreetField) ownableField;
-                        total += streetField.getBuildingPrice() * streetField.getBuildings();
-                    }
-                }
-            }
-        }
-        total += player.getAccount().getBalance();
-        return total;
     }
 
     private int getFerries(Player player) {
