@@ -270,7 +270,7 @@ public class FieldController {
     }
 
 
-    public String[] getOwnerOfFieldsArray(Player player){
+    public OwnableField[] getOwnerOfFieldsArray(Player player){
         int playerOwnFieldCounter = 0;
         for(Field field : fields){
             if(field instanceof OwnableField){
@@ -280,17 +280,34 @@ public class FieldController {
                 }
             }
         }
-        String[] ownerOfFieldsArray = new String[playerOwnFieldCounter];
+        OwnableField[] ownerOfFieldsArray = new OwnableField[playerOwnFieldCounter];
         playerOwnFieldCounter = 0;
-        for(Field field : fields){
-            if(field instanceof OwnableField){
-                OwnableField ownableField = (OwnableField) field;
+        for(int i = 0;i<fields.length;i++){
+            if(fields[i] instanceof OwnableField){
+                OwnableField ownableField = (OwnableField) fields[i];
                 if(ownableField.getOwner() == player){
-                    ownerOfFieldsArray[playerOwnFieldCounter] = ownableField.getTitle();
+                    ownerOfFieldsArray[playerOwnFieldCounter] = ownableField;
                     playerOwnFieldCounter++;
                 }
             }
         }
         return ownerOfFieldsArray;
+    }
+
+    public String[] transformToStringArray(Field[] fields){
+        String[] stringArray = new String[fields.length];
+        for(int i = 0;i<fields.length;i++){
+            stringArray[i] = fields[i].getTitle();
+        }
+        return stringArray;
+    }
+
+    public int getFieldIndex(Field field){
+        for(int i = 0;i<fields.length;i++){
+            if(fields[i].getTitle().equals(field.getTitle())){
+                return i;
+            }
+        }
+        return -1;
     }
 }

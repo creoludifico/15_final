@@ -85,12 +85,35 @@ public class TradeController {
         String aktion = InterfaceGUI.awaitUserButtonsClicked("Vælg den spiller du vil sælge en grund til", player1.getName(), buttons);
         for(Player player2 : playerController.getPlayers()){
             if(aktion.equals(player2.getName())){
-                String[] player1OwnFields = fieldController.getOwnerOfFieldsArray(player1);
+                OwnableField[] player1OwnFields = fieldController.getOwnerOfFieldsArray(player1);
+                String[] player1OwnFieldsString = fieldController.transformToStringArray(player1OwnFields);
                 if(player1OwnFields.length == 0){
                     InterfaceGUI.showMessage("Du har ingen grunde at forhandle med", player1.getName());
                 }else{
-                    InterfaceGUI.awaitDropDownSelected("Vælg det felt du vil forhandle med " + player2.getName(), player1.getName(), player1OwnFields);
+                    String dropDownAktion = InterfaceGUI.awaitDropDownSelected("Vælg det felt du vil forhandle med " + player2.getName(), player1.getName(), player1OwnFieldsString);
+
+                    for(OwnableField player1OwnField : player1OwnFields){
+                        if(dropDownAktion.equals(player1OwnField.getTitle())){
+                            int price = InterfaceGUI.awaitUserIntegerInput("Indtast den pris som grunden " + player1OwnField.getTitle() + " skal koste for " + player2.getName(), player1.getName());
+                            if(price > player2.getAccount().getBalance()){
+                                InterfaceGUI.showMessage("Spilleren " + player2.getName() + " har ikke råd til at købe grunden for den pris... I skal aftale noget andet.");
+                                break;
+                            }
+
+                            String yes = "Ja";
+                            String no = "Nej";
+                            String[] confirmButtons = new String[]{yes, no};
+
+                            String confirmAktion = InterfaceGUI.awaitUserButtonsClicked("Bekræft at dette er sandt. \n Grunden " + player1OwnField.getTitle() + " bliver solgt til " + player2.getName() + " for beløbet " + price, player1.getName(), confirmButtons);
+                            if(confirmAktion.equals(yes)){
+                                player1OwnField.setOwner(player2, fieldController.getFieldIndex(player1OwnField));
+                                player1.getAccount().modifyBalance(price, player1.getName());
+                                player2.getAccount().modifyBalance(-price, player2.getName());
+                            }
+                        }
+                    }
                 }
+                break;
             }
         }
     }
