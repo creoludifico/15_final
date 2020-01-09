@@ -141,7 +141,6 @@ public class GameBoard {
                 };
                 while (dieTurnIsDone)
                 {
-
                     String action = InterfaceGUI.awaitUserButtonsClicked("Du har nu følgende muligheder: ", currentPlayer.getName(), buttonsForEndActions);
                     if(action.equals(pawnField)){
                         tradeController.pawnField(currentPlayer);

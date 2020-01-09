@@ -79,6 +79,9 @@ public class InterfaceGUI {
     public static int awaitUserIntegerInput (String msg) {
         return gui.getUserInteger(msg);
     }
+    public static int awaitUserIntegerInput (String msg, String name) {
+        return gui.getUserInteger("PERSON: " + name + " - " + msg);
+    }
 
     public static int awaitUserIntegerInput (String msg, int min, int max) {
         return gui.getUserInteger(msg, min, max); //Der er en fejl i GUIen at hvis man ikke indtaster noget og klikker ENTER kommer der en fejl. (Kan ikke gribes via try catch)
@@ -89,6 +92,10 @@ public class InterfaceGUI {
     }
     public static String awaitUserButtonsClicked (String msg, String name, String... buttonsString){
         return gui.getUserButtonPressed("PERSON: " + name + " - " + msg, buttonsString);
+    }
+
+    public static String awaitDropDownSelected(String msg, String name, String... selections){
+        return gui.getUserSelection("PERSON: " + name + " - " + msg, selections);
     }
 
     public static void setDices(int dieValue1, int dieValue2){

@@ -181,14 +181,11 @@ public class FieldController {
                 ownableField.setOwner(player, fieldIndex);
             }
             else if(answer.equals(no)){
-                InterfaceGUI.showMessage("Der skal nu bydes på grunden: " + ownableField.getTitle());
-                tradeController.auction(ownableField);
-                //Auction
+                tradeController.auction(ownableField, fieldIndex);
             }
         }
     }
     private void ownableFieldAction(Player player, int fieldIndex, BeerField beerField, RaffleCup raffleCup){
-        ownableFieldAction(player, fieldIndex);
         if(beerField.getOwner() != player && beerField.getOwner() != null){
             InterfaceGUI.showMessage(beerField.getOwner().getName() + " ejer bryggeriet og der skal nu betales til vedkommende.", player.getName());
 
@@ -215,10 +212,11 @@ public class FieldController {
             InterfaceGUI.showMessage("Du skal betale " + rent, player.getName());
             player.getAccount().modifyBalance(-rent, player.getName());
             beerField.getOwner().getAccount().modifyBalance(rent, beerField.getOwner().getName());
+        }else{
+            ownableFieldAction(player, fieldIndex);
         }
     }
     private void ownableFieldAction(Player player, int fieldIndex, FerryField ferryField){
-        ownableFieldAction(player, fieldIndex);
         if(ferryField.getOwner() != player && ferryField.getOwner() != null){
             InterfaceGUI.showMessage(ferryField.getOwner().getName() + " ejer færgen og der skal nu betales til vedkommende.", player.getName());
 
@@ -237,10 +235,11 @@ public class FieldController {
             InterfaceGUI.showMessage("Du skal betale " + rent, player.getName());
             player.getAccount().modifyBalance(-rent, player.getName());
             ferryField.getOwner().getAccount().modifyBalance(rent, ferryField.getOwner().getName());
+        }else{
+            ownableFieldAction(player, fieldIndex);
         }
     }
     private void ownableFieldAction(Player player, int fieldIndex, StreetField streetField){
-        ownableFieldAction(player, fieldIndex);
         if(streetField.getOwner() != player && streetField.getOwner() != null){
             InterfaceGUI.showMessage(streetField.getOwner().getName() + " ejer grunden og der skal nu betales til vedkommende.", player.getName());
 
@@ -265,6 +264,33 @@ public class FieldController {
             InterfaceGUI.showMessage("Du skal betale " + rent, player.getName());
             player.getAccount().modifyBalance(-rent, player.getName());
             streetField.getOwner().getAccount().modifyBalance(rent, streetField.getOwner().getName());
+        }else{
+            ownableFieldAction(player, fieldIndex);
         }
+    }
+
+
+    public String[] getOwnerOfFieldsArray(Player player){
+        int playerOwnFieldCounter = 0;
+        for(Field field : fields){
+            if(field instanceof OwnableField){
+                OwnableField ownableField = (OwnableField) field;
+                if(ownableField.getOwner() == player){
+                    playerOwnFieldCounter++;
+                }
+            }
+        }
+        String[] ownerOfFieldsArray = new String[playerOwnFieldCounter];
+        playerOwnFieldCounter = 0;
+        for(Field field : fields){
+            if(field instanceof OwnableField){
+                OwnableField ownableField = (OwnableField) field;
+                if(ownableField.getOwner() == player){
+                    ownerOfFieldsArray[playerOwnFieldCounter] = ownableField.getTitle();
+                    playerOwnFieldCounter++;
+                }
+            }
+        }
+        return ownerOfFieldsArray;
     }
 }
