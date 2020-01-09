@@ -40,6 +40,8 @@ public class GameBoard {
         playerController.setChanceCardController(chanceCardController);
         chanceCardController.setPlayerController(playerController);
         chanceCardController.setFieldController(fieldController);
+        tradeController.setPlayerController(playerController);
+        tradeController.setFieldController(fieldController);
     }
 
     public void runGame(){
