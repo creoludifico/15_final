@@ -184,12 +184,12 @@ public class FieldController {
                 playerController.modifyBalance(-ownableField.getPrice(), player);
                 ownableField.setOwner(player, fieldIndex);
             }
-
-            if(answer.equals(no) || player.getAccount().getBalance() < ownableField.getPrice())
+            if(answer.equals(no) || player.getAccount().getBalance() < ownableField.getPrice()){
                 tradeController.auction(ownableField, fieldIndex);
             }
         }
     }
+
     private void ownableFieldAction(Player player, int fieldIndex, BeerField beerField, RaffleCup raffleCup){
         if(beerField.getOwner() != player && beerField.getOwner() != null){
             InterfaceGUI.showMessage(beerField.getOwner().getName() + " ejer bryggeriet og der skal nu betales til vedkommende.", player.getName());
