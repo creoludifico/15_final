@@ -41,7 +41,7 @@ public class Player {
         return hasEscapeJailCard;
     }
 
-    public void setFieldIndex(int fieldIndex){
+    public void setFieldIndexx(int fieldIndex){
         this.fieldIndex = fieldIndex;
         InterfaceGUI.movePlayerToField(name, fieldIndex);
     }

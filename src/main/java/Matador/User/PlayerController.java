@@ -54,7 +54,7 @@ public class PlayerController {
         this.players = players;
 
         for(Player player : players){
-            player.setFieldIndex(0);
+            player.setFieldIndexx(0);
         }
     }
 
@@ -72,8 +72,11 @@ public class PlayerController {
         return players[playerIndex];
     }
 
-    public void movePlayerOnField(Player player, int diceValues){
+    public void movePlayerForwardField(Player player, int diceValues){
         int fieldIndex = player.getFieldIndex() + diceValues;
+        movePlayerToField(player, fieldIndex);
+    }
+    public void movePlayerToField(Player player, int fieldIndex){
         if(fieldIndex > fieldController.getFields().length || player.isBonusOnNextRaffle()){
             player.getAccount().modifyBalance(200, player.getName());
             player.setBonusOnNextRaffle(false);
@@ -82,7 +85,6 @@ public class PlayerController {
             player.setBonusOnNextRaffle(true);
         }
 
-        player.setFieldIndex(fieldIndex % fieldController.getFields().length);
+        player.setFieldIndexx(fieldIndex % fieldController.getFields().length);
     }
-
 }

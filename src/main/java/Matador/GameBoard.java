@@ -105,7 +105,7 @@ public class GameBoard {
                 if(!playerShakeTheRaffleCupFromJail) {
                     raffleCup.awaitShakeTheRaffleCup(currentPlayer.getName());
                 }
-                playerController.movePlayerOnField(currentPlayer, raffleCup.getTotalValue());
+                playerController.movePlayerForwardField(currentPlayer, raffleCup.getTotalValue());
 
                 int currentPlayerFieldIndex = playerController.getCurrentPlayer().getFieldIndex();
                 fieldController.fieldAction(currentPlayer, currentPlayerFieldIndex, raffleCup);
@@ -115,7 +115,7 @@ public class GameBoard {
             if (raffleCup.isSameDie()) {
                 isSameDieCounter++;
                 if(isSameDieCounter > 2){
-                    currentPlayer.setFieldIndex(10);
+                    playerController.movePlayerToField(currentPlayer, 10);
                     currentPlayer.setInJail(true);
                     isSameDieCounter = 0;
                     dieTurnIsDone = true;

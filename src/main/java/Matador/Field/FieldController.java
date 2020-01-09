@@ -94,7 +94,7 @@ public class FieldController {
         else if(field instanceof JailField){
             //JailField jailField = (JailField) field; //Feltet i sig selv skal ikke bruges her.
             player.setInJail(true);
-            player.setFieldIndex(10);
+            playerController.movePlayerToField(player, 10);
         }
         else if(field instanceof RefugeField){
             //RefugeField refugeField = (RefugeField) field; //Der sker ikke en dyt her "Pause felt"

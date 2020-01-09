@@ -143,15 +143,15 @@ public class ChanceCardController {
             FerryCard fc = (FerryCard) pickedCard;
             int playerFieldIndex = player.getFieldIndex();
             if (playerFieldIndex < fc.getOeresond()) {
-                player.setFieldIndex(fc.getOeresond());
+                playerController.movePlayerToField(player, fc.getOeresond());
             } else if (playerFieldIndex < fc.getDfds()) {
-                player.setFieldIndex(fc.getDfds());
+                playerController.movePlayerToField(player, fc.getDfds());
             } else if (playerFieldIndex < fc.getOes()) {
-                player.setFieldIndex(fc.getOes());
+                playerController.movePlayerToField(player, fc.getOes());
             } else if (playerFieldIndex < fc.getBornholm()) {
-                player.setFieldIndex(fc.getBornholm());
+                playerController.movePlayerToField(player, fc.getBornholm());
             } else {
-                player.setFieldIndex(fc.getOeresond());
+                playerController.movePlayerToField(player, fc.getOeresond());
             }
             if(fieldController.getFields()[playerFieldIndex] instanceof FerryField) {
                 FerryField field = (FerryField) fieldController.getFields()[playerFieldIndex];
@@ -165,17 +165,17 @@ public class ChanceCardController {
             // Ryk til given position
         } else if (pickedCard instanceof MoveAbsoluteCard){
             MoveAbsoluteCard mac = (MoveAbsoluteCard) pickedCard;
-            player.setFieldIndex(mac.getFieldIndex());
+            playerController.movePlayerToField(player, mac.getFieldIndex());
             InterfaceGUI.showMessage(player.getName() + ": Du er flyttet til " + fieldController.getFields()[mac.getFieldIndex()].getTitle());
             // Ryk given felter bagud
         } else if (pickedCard instanceof MoveBackwardsCard) {
             MoveBackwardsCard mbc = (MoveBackwardsCard) pickedCard;
-            player.setFieldIndex((player.getFieldIndex() - mbc.getBackward()) % fieldController.getFields().length);
+            playerController.movePlayerToField(player, (player.getFieldIndex() - mbc.getBackward()) % fieldController.getFields().length);
             InterfaceGUI.showMessage(player.getName() + ": Du er flyttet 3 tilbage til " + fieldController.getFields()[player.getFieldIndex()].getTitle());
             // Ryk i fængsel
         } else if (pickedCard instanceof MoveToJailCard) {
             MoveToJailCard mtjc = (MoveToJailCard) pickedCard;
-            player.setFieldIndex(mtjc.getFieldIndex());
+            playerController.movePlayerToField(player, mtjc.getFieldIndex());
             player.setInJail(true);
             InterfaceGUI.showMessage(player.getName() + ": Du er nu i fængsel");
             // Gratis ud af fængsel kort
