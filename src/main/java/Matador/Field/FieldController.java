@@ -177,10 +177,15 @@ public class FieldController {
             };
             String answer = InterfaceGUI.awaitUserButtonsClicked("Denne grund er ikke købt. Vil du købe?", player.getName(), buttons);
             if(answer.equals(yes)){
+                if(player.getAccount().getBalance() < ownableField.getPrice())
+                {
+                    InterfaceGUI.showMessage("Du har ikke råd til at købe den grund.");
+                }
                 playerController.modifyBalance(-ownableField.getPrice(), player);
                 ownableField.setOwner(player, fieldIndex);
             }
-            else if(answer.equals(no)){
+
+            if(answer.equals(no) || player.getAccount().getBalance() < ownableField.getPrice())
                 tradeController.auction(ownableField, fieldIndex);
             }
         }
