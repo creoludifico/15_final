@@ -3,6 +3,7 @@ package Matador.Field;
 import GUI.InterfaceGUI;
 import Matador.ChanceCard.ChanceCardController;
 import Matador.RaffleCup.RaffleCup;
+import Matador.TradeController;
 import Matador.User.Player;
 import Matador.User.PlayerController;
 
@@ -12,12 +13,16 @@ public class FieldController {
     private Field[] fields;
     private PlayerController playerController;
     private ChanceCardController chanceCardController;
+    private TradeController tradeController;
 
     public void setPlayerController(PlayerController playerController) {
         this.playerController = playerController;
     }
     public void setChanceCardController(ChanceCardController chanceCardController) {
         this.chanceCardController = chanceCardController;
+    }
+    public void setTradeController(TradeController tradeController) {
+        this.tradeController = tradeController;
     }
 
     public FieldController() {
@@ -177,6 +182,7 @@ public class FieldController {
             }
             else if(answer.equals(no)){
                 InterfaceGUI.showMessage("Der skal nu bydes på grunden: " + ownableField.getTitle());
+                tradeController.auction();
                 //Auction
             }
         }
