@@ -57,7 +57,7 @@ public class TradeController {
                     InterfaceGUI.showMessage("Ingen bød så derfor slutter auktionen uden grunden er købt");
                 }
                 else{
-                    biddingPlayer.getAccount().modifyBalance(-biddingPrice, biddingPlayer.getName());
+                    playerController.modifyBalance(-biddingPrice, biddingPlayer);
                     ownableField.setOwner(biddingPlayer, fieldIndex);
                     InterfaceGUI.showMessage(biddingPlayer.getName() + " vandt auktionen med det højeste bud på " + biddingPrice);
                 }
@@ -107,8 +107,8 @@ public class TradeController {
                             String confirmAktion = InterfaceGUI.awaitUserButtonsClicked("Bekræft at dette er sandt. \n Grunden " + player1OwnField.getTitle() + " bliver solgt til " + player2.getName() + " for beløbet " + price, player1.getName(), confirmButtons);
                             if(confirmAktion.equals(yes)){
                                 player1OwnField.setOwner(player2, fieldController.getFieldIndex(player1OwnField));
-                                player1.getAccount().modifyBalance(price, player1.getName());
-                                player2.getAccount().modifyBalance(-price, player2.getName());
+                                playerController.modifyBalance(price, player1);
+                                playerController.modifyBalance(-price, player2);
                             }
                         }
                     }

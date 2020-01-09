@@ -78,7 +78,7 @@ public class PlayerController {
     }
     public void movePlayerToField(Player player, int fieldIndex){
         if(fieldIndex > fieldController.getFields().length || player.isBonusOnNextRaffle()){
-            player.getAccount().modifyBalance(200, player.getName());
+            this.modifyBalance(200, player);
             player.setBonusOnNextRaffle(false);
         }
         if (fieldIndex == fieldController.getFields().length){
@@ -86,5 +86,13 @@ public class PlayerController {
         }
 
         player.setFieldIndexx(fieldIndex % fieldController.getFields().length);
+    }
+
+    public void modifyBalance(int appendedBalance, Player player){
+        player.getAccount().modifyBalance(appendedBalance, player.getName());
+
+        if(player.getAccount().getBalance() < 0){
+            InterfaceGUI.showMessage("Du har tabt.", player.getName());
+        }
     }
 }

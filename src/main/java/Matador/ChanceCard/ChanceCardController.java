@@ -88,7 +88,7 @@ public class ChanceCardController {
         if (pickedCard instanceof CashInDependentAssetsCard) {
             CashInDependentAssetsCard cidac = (CashInDependentAssetsCard) pickedCard;
             if (collectAsssets(player) < cidac.getMaxCashLimit()) {
-                player.getAccount().modifyBalance(cidac.getCash(), player.getName());
+                playerController.modifyBalance(cidac.getCash(), player);
                 InterfaceGUI.showMessage(player.getName() + ": Du besidder under " + cidac.getMaxCashLimit() + " i samlede værdier. Derfor modtager du " + cidac.getCash() + " i Matador Legatet");
             } else {
                 InterfaceGUI.showMessage(player.getName() + ": Du besidder for mange aktiver til at modtage Matador Legatet");
@@ -101,10 +101,10 @@ public class ChanceCardController {
             int totalMe = 0;
             for (int i = 0; i < playerController.getPlayers().length; i++) {
                 if (playerController.getPlayer(i) != player) {
-                    playerController.getPlayer(i).getAccount().modifyBalance(-cifopc.getCash(), playerController.getPlayer(i).getName());
+                    playerController.modifyBalance(-cifopc.getCash(), playerController.getPlayer(i));
                 } else {
                     totalMe += (playerController.getPlayers().length - 1) * cifopc.getCash();
-                    player.getAccount().modifyBalance(totalMe, player.getName());
+                    playerController.modifyBalance(totalMe, player);
                 }
             }
             InterfaceGUI.showMessage(player.getName() + ": Du har modtaget sammenlagt " + totalMe + " og de andre spillere har mistet hver " + cifopc.getCash());
@@ -113,7 +113,7 @@ public class ChanceCardController {
         // Betal eller modtag penge
         else if (pickedCard instanceof CashInOutCard) {
             CashInOutCard cioc = (CashInOutCard) pickedCard;
-            player.getAccount().modifyBalance(cioc.getCash(), player.getName());
+            playerController.modifyBalance(cioc.getCash(), player);
             InterfaceGUI.showMessage( player.getName() + (cioc.getCash() < 0 ? ": Du har betalt "  + (-cioc.getCash()) : ": Du har indkasseret " + cioc.getCash()));
         }
 
@@ -135,7 +135,7 @@ public class ChanceCardController {
                     }
                 }
             }
-            player.getAccount().modifyBalance(total, player.getName());
+            playerController.modifyBalance(total, player);
             InterfaceGUI.showMessage(player.getName() + ": Din samlede beskatning er på " + total);
 
             // Ryk til nærmeste færge + dobbelt leje hvis ejet
@@ -156,7 +156,7 @@ public class ChanceCardController {
             if(fieldController.getFields()[playerFieldIndex] instanceof FerryField) {
                 FerryField field = (FerryField) fieldController.getFields()[playerFieldIndex];
                 if(field.getOwner() != null) {
-                    player.getAccount().modifyBalance(-field.getRent(getFerries(player)) * 2, player.getName());
+                    playerController.modifyBalance(-field.getRent(getFerries(player)) * 2, player);
                     InterfaceGUI.showMessage(player.getName() + ": Du er landet på " + field.getTitle() + ", som er ejet af " + field.getOwner().getName() + ". Du skal derfor betale leje");
                 } else {
                     fieldController.fieldAction(player, playerFieldIndex, null);

@@ -152,13 +152,13 @@ public class FieldController {
                 }
                 totalPrice = totalPrice * taxField.percentage;
                 int totalPriceInt = (int) Math.round(totalPrice); //Runder enten op eller ned
-                player.getAccount().modifyBalance(-totalPriceInt, player.getName());
+                playerController.modifyBalance(-totalPriceInt, player);
             }
             else if(answer.equals(pay200)){
-                player.getAccount().modifyBalance(-200, player.getName());
+                playerController.modifyBalance(-200, player);
             }
             else if(answer.equals(pay100)){
-                player.getAccount().modifyBalance(-100, player.getName());
+                playerController.modifyBalance(-100, player);
             }
         }
         else if(field instanceof VisitJailField){
@@ -177,7 +177,7 @@ public class FieldController {
             };
             String answer = InterfaceGUI.awaitUserButtonsClicked("Denne grund er ikke købt. Vil du købe?", player.getName(), buttons);
             if(answer.equals(yes)){
-                player.getAccount().modifyBalance(-ownableField.getPrice(), player.getName());
+                playerController.modifyBalance(-ownableField.getPrice(), player);
                 ownableField.setOwner(player, fieldIndex);
             }
             else if(answer.equals(no)){
@@ -210,8 +210,8 @@ public class FieldController {
             rent *= 25 * sameOwnerCounter;
 
             InterfaceGUI.showMessage("Du skal betale " + rent, player.getName());
-            player.getAccount().modifyBalance(-rent, player.getName());
-            beerField.getOwner().getAccount().modifyBalance(rent, beerField.getOwner().getName());
+            playerController.modifyBalance(-rent, player);
+            playerController.modifyBalance(rent, beerField.getOwner());
         }else{
             ownableFieldAction(player, fieldIndex);
         }
@@ -233,8 +233,8 @@ public class FieldController {
             InterfaceGUI.showMessage(ferryField.getOwner().getName() + " ejer " + sameOwnerCounter + " færger.", player.getName());
 
             InterfaceGUI.showMessage("Du skal betale " + rent, player.getName());
-            player.getAccount().modifyBalance(-rent, player.getName());
-            ferryField.getOwner().getAccount().modifyBalance(rent, ferryField.getOwner().getName());
+            playerController.modifyBalance(-rent, player);
+            playerController.modifyBalance(rent, ferryField.getOwner());
         }else{
             ownableFieldAction(player, fieldIndex);
         }
@@ -262,8 +262,8 @@ public class FieldController {
             }
 
             InterfaceGUI.showMessage("Du skal betale " + rent, player.getName());
-            player.getAccount().modifyBalance(-rent, player.getName());
-            streetField.getOwner().getAccount().modifyBalance(rent, streetField.getOwner().getName());
+            playerController.modifyBalance(-rent, player);
+            playerController.modifyBalance(rent, streetField.getOwner());
         }else{
             ownableFieldAction(player, fieldIndex);
         }
