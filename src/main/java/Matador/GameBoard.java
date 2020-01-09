@@ -51,7 +51,6 @@ public class GameBoard {
         while(!gameOver){
             playerController.setCurrentPlayer(currentPlayerIndex);
             Player currentPlayer = playerController.getCurrentPlayer();
-            String[] buttons;
             if(currentPlayer.isInJail()){
                 InterfaceGUI.showMessage("Du er i fængsel", currentPlayer.getName());
 
@@ -59,19 +58,20 @@ public class GameBoard {
                 String pay100String = "Betal 100";
                 String raffleDicesString = "Kast med terning og sats på to ens";
 
+                String[] buttonsForJail;
                 if(currentPlayer.hasEscapeJailCard()){
-                    buttons = new String[]{
+                    buttonsForJail = new String[]{
                             escapeJailCardString,
                             pay100String,
                             raffleDicesString
                     };
                 }else{
-                    buttons = new String[]{
+                    buttonsForJail = new String[]{
                             pay100String,
                             raffleDicesString
                     };
                 }
-                String action = InterfaceGUI.awaitUserButtonsClicked("Du har nu følgende muligheder for at komme ud af fængslet: ", currentPlayer.getName(), buttons);
+                String action = InterfaceGUI.awaitUserButtonsClicked("Du har nu følgende muligheder for at komme ud af fængslet: ", currentPlayer.getName(), buttonsForJail);
                 if(action.equals(escapeJailCardString)){
                     currentPlayer.setHasEscapeJailCard(false);
                     currentPlayer.setInJail(false);
@@ -124,19 +124,20 @@ public class GameBoard {
             {
                 String sellHouse =  "Salg af huse";
                 String buyHouse =  "Køb af huse";
-                String forhandle =  "Forhandle med en anden spiller";
-                String afslutTur =  "Afslut din tur";
+                String trading =  "Forhandle med en anden spiller";
+                String endTurn =  "Afslut din tur";
 
-                buttons = new String[]{
+                String[] buttonsForEndActions;
+                buttonsForEndActions = new String[]{
                         sellHouse,
                         buyHouse,
-                        forhandle,
-                        afslutTur
+                        trading,
+                        endTurn
                 };
                 while (dieTurnIsDone)
                 {
 
-                    String action = InterfaceGUI.awaitUserButtonsClicked("Du har nu følgende muligheder: ", currentPlayer.getName(), buttons);
+                    String action = InterfaceGUI.awaitUserButtonsClicked("Du har nu følgende muligheder: ", currentPlayer.getName(), buttonsForEndActions);
                     if(action.equals(sellHouse)){
                         tradeController.sellHouse();
                     }
@@ -144,11 +145,11 @@ public class GameBoard {
                     {
                         tradeController.buyHouse();
                     }
-                    if(action.equals(forhandle))
+                    if(action.equals(trading))
                     {
                         tradeController.tradeWithPlayer();
                     }
-                    if(action.equals(afslutTur))
+                    if(action.equals(endTurn))
                     {
                         dieTurnIsDone = false;
                     }
