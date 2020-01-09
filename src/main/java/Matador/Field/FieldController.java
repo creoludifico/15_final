@@ -344,6 +344,29 @@ public class FieldController {
         return result;
     }
 
+    public StreetField[] getOwnerOfStreetBuildingsArray(Player player){
+        int count = 0;
+        for(Field field : fields){
+            if(field instanceof StreetField){
+                StreetField streetField = (StreetField) field;
+                if(streetField.getOwner() == player && streetField.getBuildings() > 0){
+                    count++;
+                }
+            }
+        }
+        StreetField[] result = new StreetField[count];
+        int index = 0;
+        for(int i = 0;i<fields.length;i++){
+            if(fields[i] instanceof StreetField){
+                StreetField streetField = (StreetField) fields[i];
+                if(streetField.getOwner() == player && streetField.getBuildings() > 0){
+                    result[index++] = streetField;
+                }
+            }
+        }
+        return result;
+    }
+
     public String[] transformToStringArray(Field[] fields){
         String[] stringArray = new String[fields.length];
         for(int i = 0;i<fields.length;i++){
