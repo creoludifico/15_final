@@ -79,7 +79,7 @@ public class ChanceCardController {
     }
 
     public void action (Player player){
-        ChanceCard pickedCard = pickCard();
+        ChanceCard pickedCard = new FerryCard("Oslobåden"); //pickCard();
         String cardName = pickedCard.getName();
         InterfaceGUI.setGuiCard(cardName);
         InterfaceGUI.showMessage(player.getName() + ": Du har trukket chancekortet \"" + cardName + "\"");
@@ -153,6 +153,7 @@ public class ChanceCardController {
             } else {
                 playerController.movePlayerToField(player, fc.getOeresond());
             }
+            playerFieldIndex = player.getFieldIndex();
             if(fieldController.getFields()[playerFieldIndex] instanceof FerryField) {
                 FerryField field = (FerryField) fieldController.getFields()[playerFieldIndex];
                 if(field.getOwner() != null) {
