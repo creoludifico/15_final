@@ -44,6 +44,13 @@ public class InterfaceGUI {
                 GUI_Street guiStreet = (GUI_Street) guiFields[i];
                 guiStreet.setRent("");
                 guiStreet.setRentLabel("");
+            } else if(guiFields[i] instanceof GUI_Shipping){
+                GUI_Shipping guiShipping = (GUI_Shipping) guiFields[i];
+                guiShipping.setRentLabel("");
+            }else if(guiFields[i] instanceof  GUI_Brewery){
+                GUI_Brewery guiBrewery = (GUI_Brewery) guiFields[i];
+                guiBrewery.setRent("");
+                guiBrewery.setRentLabel("");
             }
         }
     }
