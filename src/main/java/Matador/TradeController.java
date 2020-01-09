@@ -141,6 +141,7 @@ public class TradeController {
         StreetField[] ownedStreetFields = fieldController.getOwnerOfStreetFieldsArray(player);
         if (ownedStreetFields.length == 0) {
             InterfaceGUI.showMessage(player.getName() + ": Du har ingen byggegrunde");
+            return;
         }
         String[] ownedStreetNames = fieldController.transformToStringArray(ownedStreetFields);
         String selection = InterfaceGUI.awaitDropDownSelected(player.getName() + ": Vælg det felt du vil bygge et huse eller hotel på.", player.getName(), ownedStreetNames);
