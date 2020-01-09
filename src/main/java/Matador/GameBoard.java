@@ -143,15 +143,15 @@ public class GameBoard {
 
                     String action = InterfaceGUI.awaitUserButtonsClicked("Du har nu følgende muligheder: ", currentPlayer.getName(), buttonsForEndActions);
                     if(action.equals(sellHouse)){
-                        tradeController.sellHouse();
+                        tradeController.sellHouse(currentPlayer);
                     }
                     if(action.equals(buyHouse))
                     {
-                        tradeController.buyHouse();
+                        tradeController.buyHouse(currentPlayer);
                     }
                     if(action.equals(trading))
                     {
-                        tradeController.tradeWithPlayer();
+                        tradeController.tradeWithPlayer(currentPlayer);
                     }
                     if(action.equals(endTurn))
                     {

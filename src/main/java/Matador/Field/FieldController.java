@@ -182,7 +182,7 @@ public class FieldController {
             }
             else if(answer.equals(no)){
                 InterfaceGUI.showMessage("Der skal nu bydes på grunden: " + ownableField.getTitle());
-                tradeController.auction();
+                tradeController.auction(ownableField);
                 //Auction
             }
         }

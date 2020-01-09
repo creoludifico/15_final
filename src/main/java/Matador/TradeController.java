@@ -1,6 +1,9 @@
 package Matador;
 
+import Matador.Field.Field;
 import Matador.Field.FieldController;
+import Matador.Field.OwnableField;
+import Matador.User.Player;
 import Matador.User.PlayerController;
 
 public class TradeController {
@@ -15,15 +18,15 @@ public class TradeController {
         this.playerController = playerController;
     }
 
-    public void auction() {
+    public void auction(OwnableField ownableField) {
     }
 
-    public void sellHouse() {
+    public void sellHouse(Player player) {
     }
 
-    public void buyHouse() {
+    public void buyHouse(Player player) {
     }
 
-    public void tradeWithPlayer() {
+    public void tradeWithPlayer(Player player) {
     }
 }
