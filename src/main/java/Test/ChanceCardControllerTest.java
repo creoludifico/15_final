@@ -1,10 +1,7 @@
 package Test;
 
-import Matador.ChanceCard.ChanceCard;
-import Matador.ChanceCard.ChanceCardController;
-import Matador.User.Account;
-import Matador.User.Player;
-import org.junit.jupiter.api.Test;
+import Matador.Models.ChanceCard.ChanceCard;
+import Matador.Controllers.ChanceCardController;
 
 import java.util.Arrays;
 
