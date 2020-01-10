@@ -152,18 +152,33 @@ public class TradeController {
         return result;
     }
 
-    private StreetField[][] ownedGroups(Player player) {
+    private StreetField[] ownedPartofGroup(StreetField[] group, Player player) {
+        int count = 0;
+        for (StreetField street: group) {
+            if (street.getOwner() == player)
+                count++;
+        }
+        StreetField[] result = count == 0 ? null : new StreetField[count];
+        int index = 0;
+        for (StreetField street: group) {
+            if (street.getOwner() == player)
+                result[index++] = street;
+        }
+        return result;
+    }
+
+    private StreetField[][] allOwnedGroups(Player player) {
         int count = 0;
         StreetField[][] groups = getStreetGroups();
         for (StreetField[] group: groups) {
-            if(ownsEntireGroup(group, player))
+            if(ownedPartofGroup(group, player) != null)
                 count++;
         }
         StreetField[][] result = new StreetField[count][];
         int index = 0;
         for (StreetField[] group: groups) {
-            if (ownsEntireGroup(group, player))
-                result[index++] = group;
+            if(ownedPartofGroup(group, player) != null)
+                result[index++] = ownedPartofGroup(group, player);
         }
         return result;
     }
@@ -313,7 +328,7 @@ public class TradeController {
     }
 
     private OwnableField[] tradeableFields(Player player) {
-        StreetField[][] groups = ownedGroups(player);
+        StreetField[][] groups = allOwnedGroups(player);
         int count = 0;
         for (StreetField[] group: groups) {
             if(tradeableGroup(group)) {
@@ -322,10 +337,10 @@ public class TradeController {
         }
         //remember to count the other tradeable fields as well!
         for (Field field: fieldController.getFields()) {
-            if(field instanceof BeerField || field instanceof FerryField)
+            if((field instanceof BeerField || field instanceof FerryField) && ((OwnableField)field).getOwner() == player)
                 count++;
         }
-        OwnableField result[] = new StreetField[count];
+        OwnableField result[] = new OwnableField[count];
         int index = 0;
         for (StreetField[] group: groups) {
             if(tradeableGroup(group)) {
@@ -335,7 +350,7 @@ public class TradeController {
             }
         }
         for (Field field: fieldController.getFields()) {
-            if (field instanceof BeerField || field instanceof FerryField)
+            if((field instanceof BeerField || field instanceof FerryField) && ((OwnableField)field).getOwner() == player)
                 result[index++] = (OwnableField) field;
         }
         return result;
