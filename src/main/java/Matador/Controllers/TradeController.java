@@ -66,6 +66,7 @@ public class TradeController {
     }
 
     public void pawnField(Player player){
+        StreetField[] ownedStreetFieldWithoutBuildings = fieldController.getOwnerOfStreetFieldsArray(player, false);
 
     }
 

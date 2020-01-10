@@ -132,6 +132,7 @@ public class GameBoard {
 
                 String[] buttonsForEndActions;
                 buttonsForEndActions = new String[]{
+                        pawnField,
                         sellHouse,
                         buyHouse,
                         trading,

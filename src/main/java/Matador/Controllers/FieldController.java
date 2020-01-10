@@ -317,35 +317,15 @@ public class FieldController {
         }
         return result;
     }
-    public StreetField[] getStreetGroupArray(String groupColor) {
-        int count = 0;
-        for(Field field : fields) {
-            if (field instanceof StreetField) {
-                StreetField streetField = (StreetField) field;
-                if (streetField.getGroupName().equals(groupColor)) {
-                    count++;
-                }
-            }
-        }
-        int index = 0;
-        StreetField[] result = new StreetField[count];
-        for(Field field : fields) {
-            if (field instanceof StreetField) {
-                StreetField streetField = (StreetField) field;
-                if (streetField.getGroupName().equals(groupColor)) {
-                    result[index++] = streetField;
-                }
-            }
-        }
-        return result;
-    }
 
-    public StreetField[] getOwnerOfStreetBuildingsArray(Player player){
+    public StreetField[] getOwnerOfStreetFieldsArray(Player player, boolean withBuildings){
         int count = 0;
         for(Field field : fields){
             if(field instanceof StreetField){
                 StreetField streetField = (StreetField) field;
-                if(streetField.getOwner() == player && streetField.getBuildings() > 0){
+                if(streetField.getOwner() == player && streetField.getBuildings() > 0 && withBuildings){
+                    count++;
+                }else if (streetField.getOwner() == player && streetField.getBuildings() == 0 && !withBuildings){
                     count++;
                 }
             }
@@ -355,13 +335,37 @@ public class FieldController {
         for(int i = 0;i<fields.length;i++){
             if(fields[i] instanceof StreetField){
                 StreetField streetField = (StreetField) fields[i];
-                if(streetField.getOwner() == player && streetField.getBuildings() > 0){
+                if(streetField.getOwner() == player && streetField.getBuildings() > 0 && withBuildings){
                     result[index++] = streetField;
+                } else if (streetField.getOwner() == player && streetField.getBuildings() == 0 && !withBuildings){
+                    count++;
                 }
             }
         }
         return result;
     }
+//    public StreetField[] getStreetGroupArray(String groupColor) {
+//        int count = 0;
+//        for(Field field : fields) {
+//            if (field instanceof StreetField) {
+//                StreetField streetField = (StreetField) field;
+//                if (streetField.getGroupName().equals(groupColor)) {
+//                    count++;
+//                }
+//            }
+//        }
+//        int index = 0;
+//        StreetField[] result = new StreetField[count];
+//        for(Field field : fields) {
+//            if (field instanceof StreetField) {
+//                StreetField streetField = (StreetField) field;
+//                if (streetField.getGroupName().equals(groupColor)) {
+//                    result[index++] = streetField;
+//                }
+//            }
+//        }
+//        return result;
+//    }
 
     public String[] transformToStringArray(Field[] fields){
         String[] stringArray = new String[fields.length];
