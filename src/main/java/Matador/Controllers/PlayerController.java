@@ -13,6 +13,13 @@ public class PlayerController {
     private FieldController fieldController;
     private TradeController tradeController;
 
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+    public void setCurrentPlayer(int currentPlayerIndex) {
+        currentPlayer = players[currentPlayerIndex];
+    }
+
     public void setFieldController(FieldController fieldController) {
         this.fieldController = fieldController;
     }
@@ -63,15 +70,38 @@ public class PlayerController {
     public Player[] getPlayers(){
         return players;
     }
-
-    public void setCurrentPlayer(int currentPlayerIndex) {
-        currentPlayer = players[currentPlayerIndex];
-    }
-    public Player getCurrentPlayer() {
-        return currentPlayer;
+    public Player[] getPlayers(Player exceptPlayer){
+        Player[] players;
+        players = new Player[this.players.length-1];
+        int index = 0;
+        for(Player player : this.players){
+            if(player != exceptPlayer){
+                players[index] = player;
+                index++;
+            }
+        }
+        return players;
     }
     public Player getPlayer(int playerIndex) {
         return players[playerIndex];
+    }
+    public Player getPlayerFromName(String name) {
+        for(Player player : players){
+            if(player.getName().equals(name)){
+                return player;
+            }
+        }
+        return null;
+    }
+    public String[] getPlayerNames(Player[] players){
+        if(players.length == 0){
+            return null;
+        }
+        String[] playerNames = new String[players.length];
+        for(int i = 0;i<players.length;i++){
+            playerNames[i] = players[i].getName();
+        }
+        return playerNames;
     }
 
     public void movePlayerForwardField(Player player, int diceValues){
@@ -89,12 +119,11 @@ public class PlayerController {
 
         player.setFieldIndexx(fieldIndex % fieldController.getFields().length);
     }
-
     public void modifyBalance(int appendedBalance, Player player){
         player.getAccount().modifyBalance(appendedBalance, player.getName());
 
         if(player.getAccount().getBalance() < 0){
-            int totalAssets = this.collectAsssets(player);
+            int totalAssets = this.getAssests(player, true, true, true);
             if(totalAssets > 0){
                 String sellHouse =  "Salg af huse";
                 String pawnField = "Pantsæt grund";
@@ -112,7 +141,7 @@ public class PlayerController {
                     }
                     if(action.equals(trading))
                     {
-                        tradeController.tradeWithPlayer(currentPlayer);
+                        tradeController.trade(currentPlayer);
                     }
                     if(action.equals(endLife))
                     {
@@ -126,16 +155,17 @@ public class PlayerController {
             }
 
             if(totalAssets <= 0){
-                OwnableField[] ownableFields = fieldController.getOwnerOfFieldsArray(player);
+                OwnableField[] ownableFields = fieldController.getOwnableFields(player);
                 int[] ownableFieldIndexes = new int[ownableFields.length];
                 for(int i = 0;i<ownableFields.length;i++){
-                    ownableFields[i].setOwner(null, fieldController.getFieldIndex(ownableFields[i]));
-                    ownableFields[i].setPawned(false);
+                    int fieldIndex = fieldController.getFieldIndex(ownableFields[i]);
+                    ownableFields[i].setOwner(null, fieldIndex);
+                    ownableFields[i].setPawned(false, fieldIndex);
                     if(ownableFields[i] instanceof StreetField){
                         StreetField streetField = (StreetField) ownableFields[i];
-                        streetField.setBuildings(0);
+                        streetField.setBuildings(0, fieldIndex);
                     }
-                    ownableFieldIndexes[i] = fieldController.getFieldIndex(ownableFields[i]);
+                    ownableFieldIndexes[i] = fieldIndex;
                 }
 
                 Player[] tempNewPlayers = new Player[players.length-1];
@@ -157,24 +187,23 @@ public class PlayerController {
             }
         }
     }
-
-    public int collectAsssets (Player player){
-        Field[] fields = fieldController.getFields();
-        int total = 0;
-        for (int index = 0; index < fields.length; index++) {
-            Field field = fields[index];
-            if (field instanceof OwnableField) {
-                OwnableField ownableField = (OwnableField) field;
-                if (ownableField.getOwner() == player) {
-                    total += ownableField.getPrice();
-                    if (ownableField instanceof StreetField) {
-                        StreetField streetField = (StreetField) ownableField;
-                        total += streetField.getBuildingPrice() * streetField.getBuildings();
-                    }
+    public int getAssests(Player player, boolean withAccount, boolean withFieldPrice, boolean withBuildings){
+        int totalAssets = 0;
+        OwnableField[] ownableFields = fieldController.getOwnableFields(player);
+        for(OwnableField ownableField : ownableFields){
+            if(withFieldPrice){
+                totalAssets += ownableField.getPrice();
+            }
+            if(withBuildings){
+                if(ownableField instanceof StreetField){
+                    StreetField streetField = (StreetField) ownableField;
+                        totalAssets += streetField.getBuildings() * streetField.getBuildingPrice();
                 }
             }
         }
-        total += player.getAccount().getBalance();
-        return total;
+        if(withAccount){
+            totalAssets += player.getAccount().getBalance();
+        }
+        return totalAssets;
     }
 }

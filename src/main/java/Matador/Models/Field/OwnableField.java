@@ -31,8 +31,9 @@ public abstract class OwnableField extends Field {
         return pawned;
     }
 
-    public void setPawned(Boolean pawned) {
+    public void setPawned(Boolean pawned, int fieldIndex) {
         this.pawned = pawned;
+        InterfaceGUI.setFieldPawned(fieldIndex, pawned);
     }
 
     public int getPrice() {

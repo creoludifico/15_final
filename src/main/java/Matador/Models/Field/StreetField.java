@@ -1,5 +1,7 @@
 package Matador.Models.Field;
 
+import Matador.GUI.InterfaceGUI;
+
 public class StreetField extends OwnableField {
     private int buildings = 0;
 
@@ -22,5 +24,13 @@ public class StreetField extends OwnableField {
 
     public int getBuildings() { return buildings; }
 
-    public void setBuildings(int buildings){this.buildings = buildings;}
+    public void setBuildings(int buildings, int fieldIndex){
+        this.buildings = buildings;
+        if(buildings > 4){
+            InterfaceGUI.setFieldHotel(fieldIndex, true);
+        }else{
+            InterfaceGUI.setFieldHotel(fieldIndex, false);
+            InterfaceGUI.setFieldHouses(fieldIndex, buildings);
+        }
+    }
 }

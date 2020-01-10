@@ -10,6 +10,10 @@ public class FieldController {
     private ChanceCardController chanceCardController;
     private TradeController tradeController;
 
+    public Field[] getFields() {
+        return fields;
+    }
+
     public void setPlayerController(PlayerController playerController) {
         this.playerController = playerController;
     }
@@ -66,10 +70,6 @@ public class FieldController {
 
             InterfaceGUI.initGUIFields(fields);
         }
-
-    public Field[] getFields() {
-        return fields;
-    }
 
     public void fieldAction(Player player, int fieldIndex, RaffleCupController raffleCupController){
         Field field = this.getFields()[fieldIndex];
@@ -185,7 +185,6 @@ public class FieldController {
             }
         }
     }
-
     private void ownableFieldAction(Player player, int fieldIndex, BeerField beerField, RaffleCupController raffleCupController){
         if(beerField.getOwner() != player && beerField.getOwner() != null){
             InterfaceGUI.showMessage(beerField.getOwner().getName() + " ejer bryggeriet og der skal nu betales til vedkommende.", player.getName());
@@ -270,104 +269,288 @@ public class FieldController {
         }
     }
 
-
-    public OwnableField[] getOwnerOfFieldsArray(Player player){
-        int playerOwnFieldCounter = 0;
+    public OwnableField[] getOwnableFields(){
+        int newSize = 0;
+        for(Field field : fields){
+            if(field instanceof OwnableField){
+                newSize++;
+            }
+        }
+        OwnableField[] result = new OwnableField[newSize];
+        int i = 0;
         for(Field field : fields){
             if(field instanceof OwnableField){
                 OwnableField ownableField = (OwnableField) field;
-                if(ownableField.getOwner() == player){
-                    playerOwnFieldCounter++;
-                }
+                result[i] = ownableField;
+                i++;
             }
         }
-        OwnableField[] ownerOfFieldsArray = new OwnableField[playerOwnFieldCounter];
-        playerOwnFieldCounter = 0;
-        for(int i = 0;i<fields.length;i++){
-            if(fields[i] instanceof OwnableField){
-                OwnableField ownableField = (OwnableField) fields[i];
-                if(ownableField.getOwner() == player){
-                    ownerOfFieldsArray[playerOwnFieldCounter] = ownableField;
-                    playerOwnFieldCounter++;
-                }
-            }
-        }
-        return ownerOfFieldsArray;
+        return result;
     }
-
-    public StreetField[] getOwnerOfStreetFieldsArray(Player player){
-        int count = 0;
+    public OwnableField[] getOwnableFields(Player player){
+        int newSize = 0;
+        OwnableField[] ownableFields = getOwnableFields();
+        for(OwnableField ownableField : ownableFields){
+            if(ownableField.getOwner() == player){
+                newSize++;
+            }
+        }
+        OwnableField[] result = new OwnableField[newSize];
+        int i = 0;
+        for(OwnableField ownableField : ownableFields){
+            if(ownableField.getOwner() == player){
+                result[i] = ownableField;
+                i++;
+            }
+        }
+        return result;
+    }
+    public OwnableField[] getOwnableFields(Player player, boolean withBuildings){
+        if(withBuildings) {
+            return getStreetFields(player, withBuildings);
+        }
+        int newSize = 0;
+        OwnableField[] ownableFields = getOwnableFields(player);
+        for(OwnableField ownableField : ownableFields){
+            if(ownableField instanceof StreetField) {
+                StreetField streetField = (StreetField)ownableField;
+                if(streetField.getBuildings() == 0){
+                    newSize++;
+                }
+            }
+            else {
+                newSize++;
+            }
+        }
+        OwnableField[] result = new OwnableField[newSize];
+        int i = 0;
+        for(OwnableField ownableField : ownableFields){
+            if(ownableField instanceof StreetField) {
+                StreetField streetField = (StreetField)ownableField;
+                if(streetField.getBuildings() == 0){
+                    result[i] = ownableField;
+                    i++;
+                }
+            }
+            else {
+                result[i] = ownableField;
+                i++;
+            }
+        }
+        return result;
+    }
+    public StreetField[] getStreetFields(){
+        int newSize = 0;
         for(Field field : fields){
             if(field instanceof StreetField){
+                newSize++;
+            }
+        }
+        StreetField[] result = new StreetField[newSize];
+        int i = 0;
+        for(Field field : fields){
+            if(field instanceof StreetField){
+                result[i] = (StreetField) field;
+                i++;
+            }
+        }
+        return result;
+    }
+    public StreetField[] getStreetFields(Player player){
+        int newSize = 0;
+        StreetField[] streetFields = getStreetFields();
+        for(StreetField streetField : streetFields){
+            if(streetField.getOwner() == player){
+                newSize++;
+            }
+        }
+        StreetField[] result = new StreetField[newSize];
+        int i = 0;
+        for(StreetField streetField : streetFields){
+            if(streetField.getOwner() == player){
+                result[i] = streetField;
+                i++;
+            }
+        }
+        return result;
+    }
+    public StreetField[] getStreetFields(Player player, boolean withBuildings){
+        int newSize = 0;
+        StreetField[] streetFields = getStreetFields(player);
+        for(StreetField streetField : streetFields){
+            if(withBuildings && streetField.getBuildings() > 0){
+                newSize++;
+            }
+            else if(!withBuildings && streetField.getBuildings() == 0){
+                newSize++;
+            }
+        }
+        StreetField[] result = new StreetField[newSize];
+        int i = 0;
+        for(StreetField streetField : streetFields){
+            if(withBuildings && streetField.getBuildings() > 0){
+                result[i] = streetField;
+                i++;
+            }
+            else if(!withBuildings && streetField.getBuildings() == 0){
+                result[i] = streetField;
+                i++;
+            }
+        }
+        return result;
+    }
+    public FerryField[] getFerryFields(){
+        int newSize = 0;
+        for(Field field : fields){
+            if(field instanceof FerryField){
+                newSize++;
+            }
+        }
+        FerryField[] result = new FerryField[newSize];
+        int i = 0;
+        for(Field field : fields){
+            if(field instanceof FerryField){
+                FerryField ferryField = (FerryField) field;
+                result[i] = ferryField;
+                i++;
+            }
+        }
+        return result;
+    }
+    public FerryField[] getFerryFields(Player player){
+        int newSize = 0;
+        FerryField[] ferryFields = getFerryFields();
+        for(FerryField ferryField : ferryFields){
+            if(ferryField.getOwner() == player){
+                newSize++;
+            }
+        }
+        FerryField[] result = new FerryField[newSize];
+        int i = 0;
+        for(FerryField ferryField : ferryFields){
+            if(ferryField.getOwner() == player){
+                result[i] = ferryField;
+                i++;
+            }
+        }
+        return result;
+    }
+    public OwnableField[] getPawnedFields(){
+        int newSize = 0;
+        for(Field field : fields){
+            if(field instanceof OwnableField){
                 OwnableField ownableField = (OwnableField) field;
-                if(ownableField.getOwner() == player){
-                    count++;
+                if(ownableField.getPawned()){
+                    newSize++;
                 }
             }
         }
-        StreetField[] result = new StreetField[count];
-        int index = 0;
-        for(int i = 0;i<fields.length;i++){
-            if(fields[i] instanceof StreetField){
-                StreetField streetField = (StreetField) fields[i];
-                if(streetField.getOwner() == player){
-                    result[index++] = streetField;
-                }
-            }
-        }
-        return result;
-    }
-
-    public StreetField[] getOwnerOfStreetFieldsArray(Player player, boolean withBuildings){
-        int count = 0;
+        OwnableField[] result = new OwnableField[newSize];
+        int i = 0;
         for(Field field : fields){
-            if(field instanceof StreetField){
-                StreetField streetField = (StreetField) field;
-                if(streetField.getOwner() == player && streetField.getBuildings() > 0 && withBuildings){
-                    count++;
-                }else if (streetField.getOwner() == player && streetField.getBuildings() == 0 && !withBuildings){
-                    count++;
-                }
-            }
-        }
-        StreetField[] result = new StreetField[count];
-        int index = 0;
-        for(int i = 0;i<fields.length;i++){
-            if(fields[i] instanceof StreetField){
-                StreetField streetField = (StreetField) fields[i];
-                if(streetField.getOwner() == player && streetField.getBuildings() > 0 && withBuildings){
-                    result[index++] = streetField;
-                } else if (streetField.getOwner() == player && streetField.getBuildings() == 0 && !withBuildings){
-                    count++;
+            if(field instanceof OwnableField){
+                OwnableField ownableField = (OwnableField) field;
+                if(ownableField.getPawned()){
+                    result[i] = ownableField;
+                    i++;
                 }
             }
         }
         return result;
     }
-//    public StreetField[] getStreetGroupArray(String groupColor) {
-//        int count = 0;
-//        for(Field field : fields) {
-//            if (field instanceof StreetField) {
-//                StreetField streetField = (StreetField) field;
-//                if (streetField.getGroupName().equals(groupColor)) {
-//                    count++;
-//                }
-//            }
-//        }
-//        int index = 0;
-//        StreetField[] result = new StreetField[count];
-//        for(Field field : fields) {
-//            if (field instanceof StreetField) {
-//                StreetField streetField = (StreetField) field;
-//                if (streetField.getGroupName().equals(groupColor)) {
-//                    result[index++] = streetField;
-//                }
-//            }
-//        }
-//        return result;
-//    }
+    public OwnableField[] getPawnedFields(Player player){
+        int newSize = 0;
+        for(OwnableField pawnedField : getPawnedFields()){
+            if(pawnedField.getOwner() == player){
+                newSize++;
+            }
+        }
+        OwnableField[] result = new OwnableField[newSize];
+        int i = 0;
+        for(OwnableField pawnedField : getPawnedFields()){
+            if(pawnedField.getOwner() == player){
+                result[i] = pawnedField;
+            }
+        }
+        return result;
+    }
 
-    public String[] transformToStringArray(Field[] fields){
+    public OwnableField[] getTradeableFields(OwnableField[] ownableFields) {
+        //Et godt eksempel hvor array list havde været til en kæmpe hjælp så det samme ikke skulle kaldes 2 gange
+        int newSize = 0;
+        for(OwnableField ownableField1 : ownableFields){
+            if(!(ownableField1 instanceof StreetField)){
+                newSize++;
+            }
+            else {
+                if(canBeTraded(ownableField1)){
+                    newSize++;
+                }
+            }
+        }
+        OwnableField[] tradeableFields = new OwnableField[newSize];
+
+        int i = 0;
+        for(OwnableField ownableField1 : ownableFields){
+            if(!(ownableField1 instanceof StreetField)){
+                tradeableFields[i] = ownableField1;
+                i++;
+            }
+            else {
+                if(canBeTraded(ownableField1)){
+                    tradeableFields[i] = ownableField1;
+                    i++;
+                }
+            }
+        }
+
+        return tradeableFields;
+    }
+    public StreetField[] getBuildableFields(StreetField[] streetFields){
+        //Et godt eksempel hvor array list havde været til en kæmpe hjælp så det samme ikke skulle kaldes 2 gange
+        int newSize = 0;
+        for(StreetField streetField1 : streetFields){
+            if(streetField1.getBuildings() == 5){
+                continue;
+            }
+            if(canBeModified(streetField1, true)){
+                newSize++;
+            }
+        }
+        StreetField[] buildableFields = new StreetField[newSize];
+        int i = 0;
+        for(StreetField streetField1 : streetFields){
+            if(streetField1.getBuildings() == 5){
+                continue;
+            }
+            if(canBeModified(streetField1, true)){
+                buildableFields[i] = streetField1;
+                i++;
+            }
+        }
+        return buildableFields;
+    }
+    public StreetField[] getDemolitionableFields(StreetField[] streetFields){
+        //Et godt eksempel hvor array list havde været til en kæmpe hjælp så det samme ikke skulle kaldes 2 gange
+        int newSize = 0;
+        for(StreetField streetField1 : streetFields){
+            if(canBeModified(streetField1, false)){
+                newSize++;
+            }
+        }
+        StreetField[] buildableFields = new StreetField[newSize];
+
+        int i = 0;
+        for(StreetField streetField1 : streetFields){
+            if(canBeModified(streetField1, false)){
+                buildableFields[i] = streetField1;
+                i++;
+            }
+        }
+        return buildableFields;
+    }
+
+    public String[] getTitlesFromFields(Field[] fields){
         String[] stringArray = new String[fields.length];
         for(int i = 0;i<fields.length;i++){
             stringArray[i] = fields[i].getTitle();
@@ -377,10 +560,45 @@ public class FieldController {
 
     public int getFieldIndex(Field field){
         for(int i = 0;i<fields.length;i++){
-            if(fields[i].getTitle().equals(field.getTitle())){
+            if(fields[i] == field){
                 return i;
             }
         }
         return -1;
+    }
+    public Field getFieldFromTitle(String title){
+        for(Field field : fields){
+            if(field.getTitle().equals(title)){
+                return field;
+            }
+        }
+        return null;
+    }
+
+    private boolean canBeTraded(OwnableField ownableField){
+        StreetField streetField1 = (StreetField) ownableField;
+        if(streetField1.getBuildings() > 0 || streetField1.getPawned()){
+            return false;
+        }
+        for(StreetField streetField2 : getStreetFields()){
+            if(streetField1.getGroupName().equals(streetField2.getGroupName()) && streetField2.getBuildings() > 0){
+                return false;
+            }
+        }
+        return true;
+    }
+    private boolean canBeModified(StreetField streetField1, boolean isBuildOrDemolish){
+        for(StreetField streetField2 : getStreetFields()){
+            if(streetField1.getGroupName().equals(streetField2.getGroupName()) && streetField1.getOwner() != streetField2.getOwner()){
+                return false;
+            }
+            if(isBuildOrDemolish && streetField1.getGroupName().equals(streetField2.getGroupName()) && streetField2.getBuildings() < streetField1.getBuildings()){
+                return false;
+            }
+            if(!isBuildOrDemolish && streetField1.getGroupName().equals(streetField2.getGroupName()) && streetField2.getBuildings() > streetField1.getBuildings()){
+                return false;
+            }
+        }
+        return true;
     }
 }
