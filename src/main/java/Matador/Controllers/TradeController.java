@@ -28,7 +28,7 @@ public class TradeController {
         while(true){
             String message;
             if(highestBidder != null){
-                message = "AUKTION: Vælg en spiller som vil byde eller afslut. Højeste bud er lige nu " + highestBid + " af " + highestBidder;
+                message = "AUKTION: Vælg en spiller som vil byde eller afslut. Højeste bud er lige nu " + highestBid + " af " + highestBidder.getName();
             }else{
                 message = "AUKTION: Vælg en spiller som vil byde eller afslut.";
             }
@@ -36,13 +36,13 @@ public class TradeController {
             if(action.equals(endAuction)){
                 if(highestBidder == null){
                     InterfaceGUI.showMessage("Ingen bød og derfor er grunden forsat ukøbt");
-                    break;
                 }
                 else {
                     ownableField.setOwner(highestBidder, fieldIndex);
                     playerController.modifyBalance(-highestBid, highestBidder);
-                    InterfaceGUI.showMessage(highestBidder + " ejer nu grunden efter at have betalt budet på kr. " + highestBid);
+                    InterfaceGUI.showMessage(highestBidder.getName() + " ejer nu grunden efter at have betalt budet på kr. " + highestBid);
                 }
+                break;
             }
             else{
                 Player player = playerController.getPlayerFromName(action);
