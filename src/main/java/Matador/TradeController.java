@@ -83,7 +83,7 @@ public class TradeController {
         String selection = InterfaceGUI.awaitDropDownSelected("Vælg det felt du vil sælge et hus eller et hotel fra", player.getName(), buildingsStreetNames);
         StreetField selectedField = (StreetField)fieldForName(selection);
         StreetField[] groupArray = fieldController.getStreetGroupArray(selectedField.getGroupName());
-        if (ownsEntireGroup(groupArray, player) && selectedField.getBuildings() == maxHousesGroup(groupArray, player) && selectedField.getBuildings() > 0) {
+        if (ownsEntireGroup(groupArray, player) && selectedField.getBuildings() == maxHousesGroup(groupArray) && selectedField.getBuildings() > 0) {
             InterfaceGUI.showMessage(player.getName() + ": Du kan godt sælge et " + (selectedField.getBuildings() == 5 ? "hotel" : "hus") + " på feltet " + selectedField.getTitle());
             playerController.modifyBalance(selectedField.getBuildingPrice(), player);
             selectedField.setBuildings(selectedField.getBuildings() - 1);
@@ -101,6 +101,47 @@ public class TradeController {
         return null;
     }
 
+    private String[] streetGroupNames(Field[] fields) {
+        int count = 0;
+        String lastGroupName = "";
+        for (Field field: fields) {
+            if (field instanceof StreetField && !((StreetField)field).getGroupName().equals(lastGroupName)) {
+                count++;
+            }
+        }
+        String[] result = new String[count];
+        int index = 0;
+        for (Field field: fields) {
+            if (field instanceof StreetField && !((StreetField)field).getGroupName().equals(lastGroupName)) {
+                result[index++] = ((StreetField) field).getGroupName();
+            }
+        }
+        return result;
+    }
+
+    private int getStreetGroupSize(String groupName) {
+        int count = 0;
+        for (Field field : fieldController.getFields()) {
+            if (field instanceof StreetField && ((StreetField) field).getGroupName().equals(groupName))
+                count++;
+        }
+        return count;
+    }
+
+    private StreetField[][] getStreetGroups() {
+        String[] streetGroupNames = streetGroupNames(fieldController.getFields());
+        StreetField[][] result = new StreetField[streetGroupNames.length][];
+        for(int i = 0; i < result.length; i++) {
+            result[i] = new StreetField[getStreetGroupSize(streetGroupNames[i])];
+            int count = 0;
+            for (Field field: fieldController.getFields()) {
+                if (field instanceof StreetField && ((StreetField)field).getGroupName().equals(streetGroupNames[i]))
+                    result[i][count++] = (StreetField)field;
+            }
+        }
+        return result;
+    }
+
     private boolean ownsEntireGroup (StreetField[] group, Player player) {
         boolean result = true;
         for (StreetField street: group) {
@@ -110,7 +151,61 @@ public class TradeController {
         return result;
     }
 
-    private int maxHousesGroup (StreetField[] group, Player player) {
+    private StreetField[][] ownedGroups(Player player) {
+        int count = 0;
+        StreetField[][] groups = getStreetGroups();
+        for (StreetField[] group: groups) {
+            if(ownsEntireGroup(group, player))
+                count++;
+        }
+        StreetField[][] result = new StreetField[count][];
+        int index = 0;
+        for (StreetField[] group: groups) {
+            if (ownsEntireGroup(group, player))
+                result[index++] = group;
+        }
+        return result;
+    }
+
+    private StreetField[] buildableFields(StreetField[][] groups) {
+        int count = 0;
+        for (StreetField[] group: groups) {
+            for (StreetField field: group) {
+                if (field.getBuildings() == minHousesGroup(group))
+                    count++;
+            }
+        }
+        StreetField[] result = new StreetField[count];
+        int index = 0;
+        for (StreetField[] group: groups) {
+            for (StreetField field: group) {
+                if (field.getBuildings() == minHousesGroup(group))
+                    result[index++] = field;
+            }
+        }
+        return result;
+    }
+
+    private StreetField[] sellableFields(StreetField[][] groups) {
+        int count = 0;
+        for (StreetField[] group: groups) {
+            for (StreetField field: group) {
+                if (field.getBuildings() == maxHousesGroup(group))
+                    count++;
+            }
+        }
+        StreetField[] result = new StreetField[count];
+        int index = 0;
+        for (StreetField[] group: groups) {
+            for (StreetField field: group) {
+                if (field.getBuildings() == maxHousesGroup(group))
+                    result[index++] = field;
+            }
+        }
+        return result;
+    }
+
+    private int maxHousesGroup (StreetField[] group) {
         int result = 0;
         for (StreetField street : group) {
             result = Math.max(result, street.getBuildings());
@@ -118,7 +213,7 @@ public class TradeController {
         return result;
     }
 
-    private int minHousesGroup (StreetField[] group, Player player) {
+    private int minHousesGroup (StreetField[] group) {
         int result = 5;
         for (StreetField street : group) {
             result = Math.min(result, street.getBuildings());
@@ -138,16 +233,17 @@ public class TradeController {
     }
 
     public void buyHouse(Player player) {
-        StreetField[] ownedStreetFields = fieldController.getOwnerOfStreetFieldsArray(player);
-        if (ownedStreetFields.length == 0) {
-            InterfaceGUI.showMessage(player.getName() + ": Du har ingen byggegrunde");
+        StreetField[][] groups = ownedGroups(player);
+        StreetField[] fields = buildableFields(groups);
+        if (fields.length == 0) {
+            InterfaceGUI.showMessage(player.getName() + ": Du kan ikke bygge på nogen grunde");
             return;
         }
-        String[] ownedStreetNames = fieldController.transformToStringArray(ownedStreetFields);
-        String selection = InterfaceGUI.awaitDropDownSelected(player.getName() + ": Vælg det felt du vil bygge et huse eller hotel på.", player.getName(), ownedStreetNames);
+        String[] names = fieldController.transformToStringArray(fields);
+        String selection = InterfaceGUI.awaitDropDownSelected(player.getName() + ": Vælg det felt du vil bygge et huse eller hotel på.", player.getName(), names);
         StreetField selectedField = (StreetField)fieldForName(selection);
-        StreetField[] groupArray = fieldController.getStreetGroupArray(selectedField.getGroupName());
-        if (ownsEntireGroup(groupArray, player) && selectedField.getBuildings() == minHousesGroup(groupArray, player) && selectedField.getBuildings() < 5) {
+
+        if (selectedField.getBuildings() < 5) {
             InterfaceGUI.showMessage(player.getName() + ": Du kan godt bygge et hus på feltet " + selectedField.getTitle());
             playerController.modifyBalance(-selectedField.getBuildingPrice(), player);
             selectedField.setBuildings(selectedField.getBuildings() + 1);
