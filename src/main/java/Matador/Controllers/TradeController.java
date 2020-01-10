@@ -48,10 +48,10 @@ public class TradeController {
                 Player player = playerController.getPlayerFromName(action);
                 int bid = InterfaceGUI.awaitUserIntegerInput("Indtast dit bud", player.getName());
                 if(bid <= highestBid){
-                    InterfaceGUI.showMessage("Budet skal være højere!", player.getName());
+                    InterfaceGUI.showMessage("Budet skal være højere end det forige!", player.getName());
                     continue;
                 }
-                else if(bid < player.getAccount().getBalance()){
+                else if(bid > player.getAccount().getBalance()){
                     InterfaceGUI.showMessage("Du har ikke penge nok til at byde dette!", player.getName());
                     continue;
                 }
