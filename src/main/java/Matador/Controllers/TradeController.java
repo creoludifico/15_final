@@ -1,9 +1,7 @@
 package Matador.Controllers;
 
 import Matador.GUI.InterfaceGUI;
-import Matador.Models.Field.Field;
-import Matador.Models.Field.OwnableField;
-import Matador.Models.Field.StreetField;
+import Matador.Models.Field.*;
 import Matador.Models.User.Player;
 
 public class TradeController {
@@ -153,7 +151,6 @@ public class TradeController {
         return result;
     }
 
-/*
     private StreetField[][] ownedGroups(Player player) {
         int count = 0;
         StreetField[][] groups = getStreetGroups();
@@ -169,7 +166,6 @@ public class TradeController {
         }
         return result;
     }
-*/
 
     private StreetField[] buildableFields(Player player) {
         StreetField[][] groups = getStreetGroups();
@@ -273,14 +269,14 @@ public class TradeController {
         String aktion = InterfaceGUI.awaitUserButtonsClicked("Vælg den spiller du vil sælge en grund til", player1.getName(), buttons);
         for(Player player2 : playerController.getPlayers()){
             if(aktion.equals(player2.getName())){
-                OwnableField[] player1OwnFields = fieldController.getOwnerOfFieldsArray(player1);
-                String[] player1OwnFieldsString = fieldController.transformToStringArray(player1OwnFields);
-                if(player1OwnFields.length == 0){
+                OwnableField[] fields = tradeableFields(player1);
+                String[] player1OwnFieldsString = fieldController.transformToStringArray(fields);
+                if(fields.length == 0){
                     InterfaceGUI.showMessage("Du har ingen grunde at forhandle med", player1.getName());
                 }else{
                     String dropDownAktion = InterfaceGUI.awaitDropDownSelected("Vælg det felt du vil forhandle med " + player2.getName(), player1.getName(), player1OwnFieldsString);
 
-                    for(OwnableField player1OwnField : player1OwnFields){
+                    for(OwnableField player1OwnField : fields){
                         if(dropDownAktion.equals(player1OwnField.getTitle())){
                             int price = InterfaceGUI.awaitUserIntegerInput("Indtast den pris som grunden " + player1OwnField.getTitle() + " skal koste for " + player2.getName(), player1.getName());
                             if(price > player2.getAccount().getBalance()){
@@ -306,6 +302,43 @@ public class TradeController {
         }
     }
 
+    private boolean tradeableGroup(StreetField[] group) {
+        boolean result = true;
+        for (StreetField street: group) {
+            if(street.getBuildings() > 0)
+                result = false;
+        }
+        return result;
+    }
+
+    private OwnableField[] tradeableFields(Player player) {
+        StreetField[][] groups = ownedGroups(player);
+        int count = 0;
+        for (StreetField[] group: groups) {
+            if(tradeableGroup(group)) {
+                count += getStreetGroupSize(group[0].getGroupName());
+            }
+        }
+        //remember to count the other tradeable fields as well!
+        for (Field field: fieldController.getFields()) {
+            if(field instanceof BeerField || field instanceof FerryField)
+                count++;
+        }
+        OwnableField result[] = new StreetField[count];
+        int index = 0;
+        for (StreetField[] group: groups) {
+            if(tradeableGroup(group)) {
+                for (StreetField street: group) {
+                    result[index++] = street;
+                }
+            }
+        }
+        for (Field field: fieldController.getFields()) {
+            if (field instanceof BeerField || field instanceof FerryField)
+                result[index++] = (OwnableField) field;
+        }
+        return result;
+    }
 
     public String[] getPlayerButtons(String endMsg, Player withoutPlayer){
         Player[] players = playerController.getPlayers();
