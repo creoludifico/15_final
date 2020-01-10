@@ -1,3 +1,4 @@
+import Matador.GUI.InterfaceGUI;
 import Matador.GameBoard;
 import gui_main.GUI;
 

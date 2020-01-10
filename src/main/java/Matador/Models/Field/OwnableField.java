@@ -2,6 +2,9 @@ package Matador.Models.Field;
 
 import Matador.GUI.InterfaceGUI;
 import Matador.Models.User.Player;
+import gui_fields.GUI_Player;
+
+import java.awt.*;
 
 public abstract class OwnableField extends Field {
     private Player owner = null;
@@ -20,7 +23,7 @@ public abstract class OwnableField extends Field {
 
     public void setOwner(Player owner, int fieldIndex) {
         this.owner = owner;
-        InterfaceGUI.setGUIFieldOwner((owner == null ? "" : owner.getName()), fieldIndex);
+        InterfaceGUI.setGUIFieldOwner((owner == null ? "" : owner.getName()), fieldIndex,InterfaceGUI.getGuiPlayer(owner.getName()).getPrimaryColor());
 
     }
 

@@ -53,13 +53,15 @@ public class InterfaceGUI {
         }
     }
 
+
     public static void setGuiPlayerBalance(String name, int balance){
         getGuiPlayer(name).setBalance(balance);
     }
 
-    public static void setGUIFieldOwner(String name, int fieldIndex){
+    public static void setGUIFieldOwner(String name, int fieldIndex,Color color){
         GUI_Field guiField = guiFields[fieldIndex];
         ((GUI_Ownable) guiField).setOwnerName(name);
+        ((GUI_Ownable) guiField).setBorder(color);
     }
 
     public static void showMessage (String msg){
@@ -162,7 +164,7 @@ public class InterfaceGUI {
         guiPlayers = guiPlayersNewTemp;
 
         for(int fieldIndex : fieldIndexes){
-            InterfaceGUI.setGUIFieldOwner(null, fieldIndex);
+            InterfaceGUI.setGUIFieldOwner(null, fieldIndex,colors[initPlayerIndex]);
         }
     }
 
