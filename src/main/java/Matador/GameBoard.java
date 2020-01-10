@@ -1,12 +1,12 @@
 package Matador;
 
-import GUI.InterfaceGUI;
-import Matador.ChanceCard.ChanceCardController;
-import Matador.Field.FieldController;
-import Matador.RaffleCup.RaffleCup;
-import Matador.User.Account;
-import Matador.User.Player;
-import Matador.User.PlayerController;
+import Matador.GUI.InterfaceGUI;
+import Matador.Controllers.ChanceCardController;
+import Matador.Controllers.FieldController;
+import Matador.Controllers.TradeController;
+import Matador.Controllers.RaffleCupController;
+import Matador.Models.User.Player;
+import Matador.Controllers.PlayerController;
 
 public class GameBoard {
     private PlayerController playerController;
@@ -43,7 +43,7 @@ public class GameBoard {
     }
 
     public void runGame(){
-        RaffleCup raffleCup = new RaffleCup();
+        RaffleCupController raffleCupController = new RaffleCupController();
         int currentPlayerIndex = 0;
         int isSameDieCounter = 0;
         boolean playerShakeTheRaffleCupFromJail = false;
@@ -83,8 +83,8 @@ public class GameBoard {
                     currentPlayer.setInJail(false);
                 }
                 else if(action.equals(raffleDicesString)){
-                    raffleCup.shakeTheRaffleCup();
-                    if(raffleCup.isSameDie()){
+                    raffleCupController.shakeTheRaffleCup();
+                    if(raffleCupController.isSameDie()){
                         currentPlayer.setInJail(false);
                     }else{
                         currentPlayer.setJailForRounds(currentPlayer.getJailForRounds() + 1);
@@ -101,16 +101,16 @@ public class GameBoard {
             if(!currentPlayer.isInJail()){
 
                 if(!playerShakeTheRaffleCupFromJail) {
-                    raffleCup.awaitShakeTheRaffleCup(currentPlayer.getName());
+                    raffleCupController.awaitShakeTheRaffleCup(currentPlayer.getName());
                 }
-                playerController.movePlayerForwardField(currentPlayer, raffleCup.getTotalValue());
+                playerController.movePlayerForwardField(currentPlayer, raffleCupController.getTotalValue());
 
                 int currentPlayerFieldIndex = playerController.getCurrentPlayer().getFieldIndex();
-                fieldController.fieldAction(currentPlayer, currentPlayerFieldIndex, raffleCup);
+                fieldController.fieldAction(currentPlayer, currentPlayerFieldIndex, raffleCupController);
             }
 
             playerShakeTheRaffleCupFromJail = false;
-            if (raffleCup.isSameDie()) {
+            if (raffleCupController.isSameDie()) {
                 isSameDieCounter++;
                 if(isSameDieCounter > 2){
                     playerController.movePlayerToField(currentPlayer, 10);
