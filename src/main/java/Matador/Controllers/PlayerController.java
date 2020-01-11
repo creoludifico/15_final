@@ -123,7 +123,7 @@ public class PlayerController {
         player.getAccount().modifyBalance(appendedBalance, player.getName());
 
         if(player.getAccount().getBalance() < 0){
-            int totalAssets = this.getAssests(player, true, true, true);
+            int totalAssets = this.getTotalAssets(player, true, true, true);
             if(totalAssets > 0){
                 String sellHouse =  "Salg af huse";
                 String pawnField = "Pantsæt grund";
@@ -187,7 +187,7 @@ public class PlayerController {
             }
         }
     }
-    public int getAssests(Player player, boolean withAccount, boolean withFieldPrice, boolean withBuildings){
+    public int getTotalAssets(Player player, boolean withAccount, boolean withFieldPrice, boolean withBuildings){
         int totalAssets = 0;
         OwnableField[] ownableFields = fieldController.getOwnableFields(player);
         for(OwnableField ownableField : ownableFields){
