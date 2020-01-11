@@ -140,6 +140,7 @@ public class TradeController {
                     result[i][count++] = (StreetField)field;
             }
         }
+        System.out.println();
         return result;
     }
 
@@ -327,6 +328,51 @@ public class TradeController {
         return result;
     }
 
+    private boolean otherOwnedHaveBuildings(StreetField meField, Player player) {
+        for (Field field: fieldController.getFields()) {
+            if(field instanceof StreetField){
+                StreetField streetField = (StreetField)field;
+                if (streetField.getGroupName().equals(meField.getGroupName()) && streetField.getOwner() == player && streetField.getBuildings() > 0 && streetField != meField) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+//    private OwnableField[] tradeableFields(Player player) {
+//        int count = 0;
+//        for (Field field: fieldController.getFields()) {
+//            if(field instanceof OwnableField && ((OwnableField)field).getOwner() == player) {
+//                boolean tradeable = true;
+//                if (otherOwnedHaveBuildings((StreetField) field, player)) {
+//                    tradeable = false;
+//                }
+//                if (tradeable) {
+//                    count++;
+//                }
+//            }
+//        }
+//
+//        OwnableField[] result = new OwnableField[count];
+//        int index = 0;
+//        for (Field field: fieldController.getFields()) {
+//            if (field instanceof OwnableField && ((OwnableField) field).getOwner() == player) {
+//                boolean tradeable = true;
+//                if (field instanceof StreetField) {
+//                    if (otherOwnedHaveBuildings((StreetField) field, player)) {
+//                        tradeable = false;
+//                    }
+//
+//                }
+//                if (tradeable) {
+//                    result[index++] = (OwnableField) field;
+//                }
+//            }
+//        }
+//        return result;
+//    }
+
     private OwnableField[] tradeableFields(Player player) {
         StreetField[][] groups = allOwnedGroups(player);
         int count = 0;
@@ -355,6 +401,7 @@ public class TradeController {
         }
         return result;
     }
+
 
     public String[] getPlayerButtons(String endMsg, Player withoutPlayer){
         Player[] players = playerController.getPlayers();
