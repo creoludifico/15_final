@@ -57,7 +57,7 @@ public class ChanceCardController {
     }
 
     public void action (Player player){
-        ChanceCard pickedCard = new FerryCard("Oslobåden"); //pickCard();
+        ChanceCard pickedCard = pickChanceCard(); //new FerryCard("Oslobåden");
         String cardName = pickedCard.getName();
         InterfaceGUI.setGuiCard(cardName);
         InterfaceGUI.showMessage(player.getName() + ": Du har trukket chancekortet \"" + cardName + "\"");
@@ -186,7 +186,7 @@ public class ChanceCardController {
         }
     }
 
-    public ChanceCard getRandomChanceCard() {
+    public ChanceCard pickChanceCard() {
         ChanceCard temp = chanceCards[0];
         for (int i = 1; i < chanceCards.length; i++) {
             chanceCards[i - 1] = chanceCards[i];
