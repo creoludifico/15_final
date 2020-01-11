@@ -7,6 +7,8 @@ import Matador.Models.User.Player;
 import java.util.Random;
 
 public class ChanceCardController {
+    private int activeCard = 0;
+
     private ChanceCard[] chanceCards;
     private FieldController fieldController;
     private PlayerController playerController;
@@ -14,6 +16,14 @@ public class ChanceCardController {
     public ChanceCard[] getChanceCards() {
         return chanceCards;
     }
+    public static int getIndexOfChanceCard(ChanceCard[] chanceCards, ChanceCard key) {
+        for (int index = 0; index < chanceCards.length; index++) {
+            if (key.equals(chanceCards[index]))
+                return index;
+        }
+        return -1;
+    }
+
     public void setFieldController(FieldController fieldController) {
         this.fieldController = fieldController;
     }
@@ -187,12 +197,14 @@ public class ChanceCardController {
     }
 
     public ChanceCard pickChanceCard() {
-        ChanceCard temp = chanceCards[0];
-        for (int i = 1; i < chanceCards.length; i++) {
-            chanceCards[i - 1] = chanceCards[i];
-        }
-        chanceCards[chanceCards.length - 1] = temp;
-        return chanceCards[0];
+        activeCard = ++activeCard % chanceCards.length;
+        return chanceCards[activeCard];
+//        ChanceCard temp = chanceCards[0];
+//        for (int i = 1; i < chanceCards.length; i++) {
+//            chanceCards[i - 1] = chanceCards[i];
+//        }
+//        chanceCards[chanceCards.length - 1] = temp;
+//        return chanceCards[0];
     }
     public void shuffleChanceCards() {
         Random rand = new Random();

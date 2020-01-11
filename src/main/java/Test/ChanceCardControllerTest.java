@@ -8,25 +8,17 @@ import java.util.Arrays;
 import static org.junit.Assert.*;
 
 public class ChanceCardControllerTest {
+    private ChanceCardController chanceCards = new ChanceCardController();
 
-    private static int indexOfChanceCardArray(ChanceCard[] array, ChanceCard key) {
-        int returnValue = -1;
-        for (int i = 0; i < array.length; ++i) {
-            if (key.equals(array[i])) {
-                returnValue = i;
-                break;
-            }
+    private boolean[] initBooleanArray(int length, boolean trueFalse) {
+        boolean[] result = new boolean[length];
+        for (int i = 0; i < length; i++) {
+            result[i] = trueFalse;
         }
-        return returnValue;
+        return result;
     }
 
-    private void initBooleanArray(Boolean[] array, Boolean trueFalse) {
-        for (int i = 0; i < array.length; i++) {
-            array[i] = trueFalse;
-        }
-    }
-
-    private Boolean allTrueFalseArray(Boolean[] array, Boolean trueFalse) {
+    private boolean isAllTrueFalseArray(boolean[] array, boolean trueFalse) {
         for (int i = 0; i < array.length; i++) {
             if(array[i] != trueFalse)
                 return false;
@@ -36,26 +28,29 @@ public class ChanceCardControllerTest {
 
     @org.junit.Test
     public void shuffleCards() {
-        ChanceCardController chanceCards = new ChanceCardController();
-        ChanceCard[] copiedDeck = Arrays.copyOf(chanceCards.getChanceCards(), chanceCards.getChanceCards().length);
+        ChanceCard[] originalDeck = Arrays.copyOf(chanceCards.getChanceCards(), chanceCards.getChanceCards().length);
         chanceCards.shuffleChanceCards();
         ChanceCard[] shuffledDeck = chanceCards.getChanceCards();
-        assertEquals(copiedDeck.length, shuffledDeck.length);
-        for (ChanceCard card : copiedDeck) {
-            assertTrue(indexOfChanceCardArray(shuffledDeck, card) != -1);
+
+        assertEquals(originalDeck.length, shuffledDeck.length);
+
+        for (ChanceCard card : shuffledDeck) {
+            assertTrue(ChanceCardController.getIndexOfChanceCard(originalDeck, card) != -1);
         }
     }
 
     @org.junit.Test
     public void pickCard() {
-        ChanceCardController chanceCards = new ChanceCardController();
-        ChanceCard[] copiedDeck = Arrays.copyOf(chanceCards.getChanceCards(), chanceCards.getChanceCards().length);
-        Boolean[] isTaken = new Boolean[copiedDeck.length];
-        initBooleanArray(isTaken, false);
-        for (int index = 0; index < copiedDeck.length; index++) {
+        ChanceCard[] originalDeck = Arrays.copyOf(chanceCards.getChanceCards(), chanceCards.getChanceCards().length);
+        boolean[] isTaken = initBooleanArray(originalDeck.length, false);
+
+        chanceCards.shuffleChanceCards();
+
+        for (int index = 0; index < originalDeck.length; index++) {
             ChanceCard card = chanceCards.pickChanceCard();
-            isTaken[indexOfChanceCardArray(copiedDeck, card)] = true;
+            isTaken[ChanceCardController.getIndexOfChanceCard(originalDeck, card)] = true;
         }
-        assertTrue(allTrueFalseArray(isTaken, true));
+
+        assertTrue(isAllTrueFalseArray(isTaken, true));
     }
 }
