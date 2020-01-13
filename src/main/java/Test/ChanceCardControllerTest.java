@@ -53,4 +53,5 @@ public class ChanceCardControllerTest {
 
         assertTrue(isAllTrueFalseArray(isTaken, true));
     }
+
 }
