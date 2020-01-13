@@ -16,7 +16,6 @@ public class RaffleCupController {
         InterfaceGUI.awaitUserButtonsClicked("Kast terning", name, buttons);
         this.shakeTheRaffleCup();
     }
-
     public void shakeTheRaffleCup(){
         d1.rollDie();
         d2.rollDie();
@@ -26,7 +25,6 @@ public class RaffleCupController {
     public boolean isSameDie(){
         return d1.getDie() == d2.getDie();
     }
-
     public int getTotalValue(){
         return d1.getDie() + d2.getDie();
     }

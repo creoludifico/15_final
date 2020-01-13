@@ -1,5 +1,7 @@
 package Matador.Models.Field;
 
+import gui_fields.GUI_Field;
+
 public abstract class Field {
     private String title, subTitle;
 

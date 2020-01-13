@@ -1,219 +1,204 @@
 package Matador.Controllers;
 
 import Matador.GUI.InterfaceGUI;
-import Matador.Models.Field.Field;
-import Matador.Models.Field.OwnableField;
-import Matador.Models.Field.StreetField;
+import Matador.Models.Field.*;
 import Matador.Models.User.Player;
+
+import java.util.Arrays;
 
 public class TradeController {
     private FieldController fieldController;
     private PlayerController playerController;
 
-    //For auktion
-    private Player biddingPlayer = null;
-    private int biddingPrice = 0;
-
-
     public void setFieldController(FieldController fieldController) {
         this.fieldController = fieldController;
     }
-
     public void setPlayerController(PlayerController playerController) {
         this.playerController = playerController;
     }
 
     public void auction(OwnableField ownableField, int fieldIndex) {
-        InterfaceGUI.showMessage("Der skal nu bydes på grunden: " + ownableField.getTitle());
+        String[] playerNames = playerController.getPlayerNames(playerController.getPlayers());
 
-        String endMsg = "Afslut auktion";
-        String[] buttons = getPlayerButtons(endMsg, null);
+        String endAuction = "Afslut auktion";
+        String[] buttons = InterfaceGUI.getStringsForAction(playerNames, endAuction);
 
+        Player highestBidder = null;
+        int highestBid = 0;
         while(true){
-            String currentMsg;
-            if(biddingPlayer != null){
-                currentMsg = "Vælg spiller som vil byde eller afslut auktionen. Nuværende højeste bud af " + biddingPlayer.getName() + " på " + biddingPrice;
+            String message;
+            if(highestBidder != null){
+                message = "AUKTION: Vælg en spiller som vil byde eller afslut. Højeste bud er lige nu " + highestBid + " af " + highestBidder.getName();
             }else{
-                currentMsg = "Vælg spiller som vil byde eller afslut auktionen.";
+                message = "AUKTION: Vælg en spiller som vil byde eller afslut.";
             }
-            String aktion = InterfaceGUI.awaitUserButtonsClicked(currentMsg, buttons);
-            for(Player player : playerController.getPlayers()){
-                if(aktion.equals(player.getName())){
-                    int bid = InterfaceGUI.awaitUserIntegerInput("Skriv dit bud", player.getName());
-                    if(bid > player.getAccount().getBalance()){
-                        InterfaceGUI.showMessage("Du har ikke penge nok til at byde denne pris!", player.getName());
-                    }
-                    else if(bid <= biddingPrice){
-                        InterfaceGUI.showMessage("Du kan ikke byde lavere end hvad der er blevet budt!", player.getName());
-                    }else{
-                        biddingPrice = bid;
-                        biddingPlayer = player;
-                    }
+            String action = InterfaceGUI.awaitUserButtonsClicked(message, buttons);
+            if(action.equals(endAuction)){
+                if(highestBidder == null){
+                    InterfaceGUI.showMessage("Ingen bød og derfor er grunden forsat ukøbt");
                 }
+                else {
+                    ownableField.setOwner(highestBidder, fieldIndex);
+                    playerController.modifyBalance(-highestBid, highestBidder);
+                    InterfaceGUI.showMessage(highestBidder.getName() + " ejer nu grunden efter at have betalt budet på kr. " + highestBid);
+                }
+                break;
             }
-            if(aktion.equals(endMsg)){
-                if(biddingPlayer == null) {
-                    InterfaceGUI.showMessage("Ingen bød så derfor slutter auktionen uden grunden er købt");
+            else{
+                Player player = playerController.getPlayerFromName(action);
+                int bid = InterfaceGUI.awaitUserIntegerInput("Indtast dit bud", player.getName());
+                if(bid <= highestBid){
+                    InterfaceGUI.showMessage("Budet skal være højere end det forige!", player.getName());
+                    continue;
+                }
+                else if(bid > player.getAccount().getBalance()){
+                    InterfaceGUI.showMessage("Du har ikke penge nok til at byde dette!", player.getName());
+                    continue;
                 }
                 else{
-                    playerController.modifyBalance(-biddingPrice, biddingPlayer);
-                    ownableField.setOwner(biddingPlayer, fieldIndex);
-                    InterfaceGUI.showMessage(biddingPlayer.getName() + " vandt auktionen med det højeste bud på " + biddingPrice);
+                    highestBid = bid;
+                    highestBidder = player;
                 }
-                break;
             }
         }
-        biddingPrice = 0;
-        biddingPlayer = null;
     }
-
     public void pawnField(Player player){
+        OwnableField[] pawnableFields = fieldController.getTradeableFields(fieldController.getOwnableFields(player, false));
+        if(pawnableFields.length == 0){
+            InterfaceGUI.showMessage("Du har ingen grunde der kan pantsættes", player.getName());
+            return;
+        }
+
+        String[] titles = fieldController.getTitlesFromFields(pawnableFields);
+
+        String endPawn = "Afslut pansætning";
+        String[] buttons = InterfaceGUI.getStringsForAction(titles, endPawn);
+
+        String action = InterfaceGUI.awaitDropDownSelected("Vælg en grund du vil pansætte", player.getName(), buttons);
+
+        if(action.equals(endPawn)){
+            return;
+        }
+        OwnableField ownableField = (OwnableField) fieldController.getFieldFromTitle(action);
+        ownableField.setPawned(true, fieldController.getFieldIndex(ownableField));
+        playerController.modifyBalance(ownableField.getMortgage(), player);
+        InterfaceGUI.showMessage("Du pantsættede " + ownableField.getTitle() + " og fik kr. " + ownableField.getMortgage());
 
     }
+    public void unpawnField(Player player) {
+        OwnableField[] pawnedFields = fieldController.getPawnedFields(player);
+        if(pawnedFields.length == 0){
+            InterfaceGUI.showMessage("Du har ingen grunde der kan få ophævet pantsætningen", player.getName());
+            return;
+        }
 
+        String[] titles = fieldController.getTitlesFromFields(pawnedFields);
+
+        String endPawn = "Afslut ophæv pantsætning";
+        String[] buttons = InterfaceGUI.getStringsForAction(titles, endPawn);
+
+        String action = InterfaceGUI.awaitDropDownSelected("Vælg en grund du vil ophæve pansætningen på", player.getName(), buttons);
+
+        if(action.equals(endPawn)){
+            return;
+        }
+        OwnableField ownableField = (OwnableField) fieldController.getFieldFromTitle(action);
+        if(ownableField.getMortgage() > player.getAccount().getBalance()){
+            InterfaceGUI.showMessage("Du har ikke råd til at ophæve pantsætningen på denne grund", player.getName());
+            return;
+        }
+        ownableField.setPawned(false, fieldController.getFieldIndex(ownableField));
+        playerController.modifyBalance(-ownableField.getMortgage(), player);
+        InterfaceGUI.showMessage("Du ophævede pantsætningen på " + ownableField.getTitle() + " og betalte kr. " + ownableField.getMortgage());
+
+    }
     public void sellHouse(Player player) {
-        StreetField[] buildingsStreetFields = fieldController.getOwnerOfStreetBuildingsArray(player);
-        if (buildingsStreetFields.length == 0) {
-            InterfaceGUI.showMessage(player.getName() + ": Du har ingen byggegrunde med bygninger på");
+        StreetField[] streetFields = fieldController.getDemolitionableFields(fieldController.getStreetFields(player, true));
+        if(streetFields.length == 0){
+            InterfaceGUI.showMessage("Du har ingen felter du kan sælge huse på", player.getName());
             return;
         }
-        String[] buildingsStreetNames = fieldController.transformToStringArray(buildingsStreetFields);
-        String selection = InterfaceGUI.awaitDropDownSelected("Vælg det felt du vil sælge et hus eller et hotel fra", player.getName(), buildingsStreetNames);
-        StreetField selectedField = (StreetField)fieldForName(selection);
-        StreetField[] groupArray = fieldController.getStreetGroupArray(selectedField.getGroupName());
-        if (ownsEntireGroup(groupArray, player) && selectedField.getBuildings() == maxHousesGroup(groupArray, player) && selectedField.getBuildings() > 0) {
-            InterfaceGUI.showMessage(player.getName() + ": Du kan godt sælge et " + (selectedField.getBuildings() == 5 ? "hotel" : "hus") + " på feltet " + selectedField.getTitle());
-            playerController.modifyBalance(selectedField.getBuildingPrice(), player);
-            selectedField.setBuildings(selectedField.getBuildings() - 1);
-            updateBuildings(selectedField);
-        } else {
-            InterfaceGUI.showMessage(player.getName() + ": Du kan ikke sælge et hus fra feltet");
-        }
-    }
 
-    private OwnableField fieldForName(String name) {
-        for (Field field: fieldController.getFields()) {
-            if (name.equals(field.getTitle()))
-                return (OwnableField)field;
-        }
-        return null;
-    }
+        String[] titles = fieldController.getTitlesFromFields(streetFields);
 
-    private boolean ownsEntireGroup (StreetField[] group, Player player) {
-        boolean result = true;
-        for (StreetField street: group) {
-            if (street.getOwner() != player)
-                result = false;
-        }
-        return result;
-    }
+        String endSellHouse = "Afslut salg af huse";
+        String[] buttons = InterfaceGUI.getStringsForAction(titles, endSellHouse);
 
-    private int maxHousesGroup (StreetField[] group, Player player) {
-        int result = 0;
-        for (StreetField street : group) {
-            result = Math.max(result, street.getBuildings());
-        }
-        return result;
-    }
+        String action = InterfaceGUI.awaitDropDownSelected("Vælg en grund du vil sælge et hus fra", player.getName(), buttons);
 
-    private int minHousesGroup (StreetField[] group, Player player) {
-        int result = 5;
-        for (StreetField street : group) {
-            result = Math.min(result, street.getBuildings());
+        if(action.equals(endSellHouse)){
+            return;
         }
-        return result;
-    }
+        StreetField streetField = (StreetField) fieldController.getFieldFromTitle(action);
+        streetField.setBuildings(streetField.getBuildings()-1, fieldController.getFieldIndex(streetField));
+        playerController.modifyBalance(streetField.getBuildingPrice(), player);
+        InterfaceGUI.showMessage("Du solgte et hus på grunden " + streetField.getTitle() + " for kr. " + streetField.getBuildingPrice());
 
-    private void updateBuildings (StreetField streetField) {
-        int index = fieldController.getFieldIndex(streetField);
-        if(streetField.getBuildings() == 5) {
-            InterfaceGUI.setFieldHouses(index, 0);
-            InterfaceGUI.setFieldHotel(index,true);
-        } else {
-            InterfaceGUI.setFieldHotel(index,false);
-            InterfaceGUI.setFieldHouses(index, streetField.getBuildings());
-        }
     }
-
     public void buyHouse(Player player) {
-        StreetField[] ownedStreetFields = fieldController.getOwnerOfStreetFieldsArray(player);
-        if (ownedStreetFields.length == 0) {
-            InterfaceGUI.showMessage(player.getName() + ": Du har ingen byggegrunde");
+        StreetField[] streetFields = fieldController.getBuildableFields(fieldController.getStreetFields(player));
+        if(streetFields.length == 0){
+            InterfaceGUI.showMessage("Du har ingen felter du kan købe huse på", player.getName());
             return;
         }
-        String[] ownedStreetNames = fieldController.transformToStringArray(ownedStreetFields);
-        String selection = InterfaceGUI.awaitDropDownSelected(player.getName() + ": Vælg det felt du vil bygge et huse eller hotel på.", player.getName(), ownedStreetNames);
-        StreetField selectedField = (StreetField)fieldForName(selection);
-        StreetField[] groupArray = fieldController.getStreetGroupArray(selectedField.getGroupName());
-        if (ownsEntireGroup(groupArray, player) && selectedField.getBuildings() == minHousesGroup(groupArray, player) && selectedField.getBuildings() < 5) {
-            InterfaceGUI.showMessage(player.getName() + ": Du kan godt bygge et hus på feltet " + selectedField.getTitle());
-            playerController.modifyBalance(-selectedField.getBuildingPrice(), player);
-            selectedField.setBuildings(selectedField.getBuildings() + 1);
-            updateBuildings(selectedField);
-        } else {
-            InterfaceGUI.showMessage(player.getName() + ": Du kan ikke bygge på feltet");
+
+        String[] titles = fieldController.getTitlesFromFields(streetFields);
+
+        String endBuyHouse = "Afslut køb af huse";
+        String[] buttons = InterfaceGUI.getStringsForAction(titles, endBuyHouse);
+
+        String action = InterfaceGUI.awaitDropDownSelected("Vælg en grund du vil købe et hus på", player.getName(), buttons);
+
+        if(action.equals(endBuyHouse)){
+            return;
         }
+        StreetField streetField = (StreetField) fieldController.getFieldFromTitle(action);
+        if(streetField.getBuildingPrice() > player.getAccount().getBalance()){
+            InterfaceGUI.showMessage("Du har ikke råd til at købe et hus/hotel på denne grund", player.getName());
+            return;
+        }
+        streetField.setBuildings(streetField.getBuildings()+1, fieldController.getFieldIndex(streetField));
+        playerController.modifyBalance(-streetField.getBuildingPrice(), player);
+        InterfaceGUI.showMessage("Du købte et hus på grunden " + streetField.getTitle() + " for kr. " + streetField.getBuildingPrice());
+
     }
-
-    public void tradeWithPlayer(Player player1) {
-        String endMsg = "Afslut handel";
-        String[] buttons = getPlayerButtons(endMsg, player1);
-
-        String aktion = InterfaceGUI.awaitUserButtonsClicked("Vælg den spiller du vil sælge en grund til", player1.getName(), buttons);
-        for(Player player2 : playerController.getPlayers()){
-            if(aktion.equals(player2.getName())){
-                OwnableField[] player1OwnFields = fieldController.getOwnerOfFieldsArray(player1);
-                String[] player1OwnFieldsString = fieldController.transformToStringArray(player1OwnFields);
-                if(player1OwnFields.length == 0){
-                    InterfaceGUI.showMessage("Du har ingen grunde at forhandle med", player1.getName());
-                }else{
-                    String dropDownAktion = InterfaceGUI.awaitDropDownSelected("Vælg det felt du vil forhandle med " + player2.getName(), player1.getName(), player1OwnFieldsString);
-
-                    for(OwnableField player1OwnField : player1OwnFields){
-                        if(dropDownAktion.equals(player1OwnField.getTitle())){
-                            int price = InterfaceGUI.awaitUserIntegerInput("Indtast den pris som grunden " + player1OwnField.getTitle() + " skal koste for " + player2.getName(), player1.getName());
-                            if(price > player2.getAccount().getBalance()){
-                                InterfaceGUI.showMessage("Spilleren " + player2.getName() + " har ikke råd til at købe grunden for den pris... I skal aftale noget andet.");
-                                break;
-                            }
-
-                            String yes = "Ja";
-                            String no = "Nej";
-                            String[] confirmButtons = new String[]{yes, no};
-
-                            String confirmAktion = InterfaceGUI.awaitUserButtonsClicked("Bekræft at dette er sandt. \n Grunden " + player1OwnField.getTitle() + " bliver solgt til " + player2.getName() + " for beløbet " + price, player1.getName(), confirmButtons);
-                            if(confirmAktion.equals(yes)){
-                                player1OwnField.setOwner(player2, fieldController.getFieldIndex(player1OwnField));
-                                playerController.modifyBalance(price, player1);
-                                playerController.modifyBalance(-price, player2);
-                            }
-                        }
-                    }
-                }
-                break;
-            }
+    public void trade(Player player) {
+        OwnableField[] tradeableFields = fieldController.getTradeableFields(fieldController.getOwnableFields(player, false));
+        if(tradeableFields.length == 0){
+            InterfaceGUI.showMessage("Du har ingen felter du kan sælge til andre spillere", player.getName());
+            return;
         }
-    }
 
+        String[] titles = fieldController.getTitlesFromFields(tradeableFields);
 
-    public String[] getPlayerButtons(String endMsg, Player withoutPlayer){
-        Player[] players = playerController.getPlayers();
+        String endTrading = "Afslut handel med grund";
+        String[] buttons = InterfaceGUI.getStringsForAction(titles, endTrading);
 
-        int lengthOfArray = players.length + 1;
-        if(withoutPlayer != null){
-            lengthOfArray--;
+        String action = InterfaceGUI.awaitDropDownSelected("Vælg en grund du vil sælge til en anden spiller", player.getName(), buttons);
+
+        if(action.equals(endTrading)){
+            return;
         }
-        String[] buttons = new String[lengthOfArray];
+        OwnableField ownableField = (OwnableField) fieldController.getFieldFromTitle(action);
 
-        int i = 0;
-        for(Player player : players){
-            if(withoutPlayer != null && withoutPlayer.getName().equals(player.getName())){
-                continue;
-            }
-            buttons[i] = player.getName();
-            i++;
+        String[] playerNames = playerController.getPlayerNames(playerController.getPlayers(player));
+        String[] buttonsPlayer = InterfaceGUI.getStringsForAction(playerNames, endTrading);
+        String playerToTradeName = InterfaceGUI.awaitUserButtonsClicked("Vælg en spiller du vil sælge grunden til", player.getName(), buttonsPlayer);
+
+        if(playerToTradeName.equals(endTrading)){
+            return;
         }
-        buttons[lengthOfArray-1] = endMsg;
-        return buttons;
+        Player playerToTrade = playerController.getPlayerFromName(playerToTradeName);
+
+        int price = InterfaceGUI.awaitUserIntegerInput("Indtast prisen for grunden");
+        if(price > playerToTrade.getAccount().getBalance()){
+            InterfaceGUI.showMessage("Spiller " + playerToTradeName + " har ikke råd til denne pris kr. " + price);
+            return;
+        }
+
+        playerController.modifyBalance(-price, playerToTrade);
+        playerController.modifyBalance(price, player);
+        ownableField.setOwner(playerToTrade, fieldController.getFieldIndex(ownableField));
+        InterfaceGUI.showMessage("Grunden " + ownableField.getTitle() + " er blevet solgt til " + playerToTradeName + " for beløbet kr. " + price);
     }
 }

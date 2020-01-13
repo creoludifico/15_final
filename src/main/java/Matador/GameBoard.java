@@ -124,6 +124,7 @@ public class GameBoard {
             }
             if(dieTurnIsDone)
             {
+                String unpawnField = "Fjern pansætning af grund";
                 String pawnField = "Pantsæt grund";
                 String sellHouse =  "Salg af huse";
                 String buyHouse =  "Køb af huse";
@@ -132,6 +133,8 @@ public class GameBoard {
 
                 String[] buttonsForEndActions;
                 buttonsForEndActions = new String[]{
+                        unpawnField,
+                        pawnField,
                         sellHouse,
                         buyHouse,
                         trading,
@@ -140,22 +143,22 @@ public class GameBoard {
                 while (true)
                 {
                     String action = InterfaceGUI.awaitUserButtonsClicked("Du har nu følgende muligheder: ", currentPlayer.getName(), buttonsForEndActions);
+                    if(action.equals(unpawnField)){
+                        tradeController.unpawnField(currentPlayer);
+                    }
                     if(action.equals(pawnField)){
                         tradeController.pawnField(currentPlayer);
                     }
                     if(action.equals(sellHouse)){
                         tradeController.sellHouse(currentPlayer);
                     }
-                    if(action.equals(buyHouse))
-                    {
+                    if(action.equals(buyHouse)){
                         tradeController.buyHouse(currentPlayer);
                     }
-                    if(action.equals(trading))
-                    {
-                        tradeController.tradeWithPlayer(currentPlayer);
+                    if(action.equals(trading)){
+                        tradeController.trade(currentPlayer);
                     }
-                    if(action.equals(endTurn))
-                    {
+                    if(action.equals(endTurn)){
                         dieTurnIsDone = false;
                         break;
                     }
