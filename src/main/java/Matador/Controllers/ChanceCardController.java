@@ -75,7 +75,7 @@ public class ChanceCardController {
         // Bonus hvis given total værdi
         if (pickedCard instanceof CashInDependentAssetsCard) {
             CashInDependentAssetsCard cidac = (CashInDependentAssetsCard) pickedCard;
-            if (playerController.getTotalAssets(player, true, true, true) < cidac.getMaxCashLimit()) {
+            if (playerController.getAssets(player, true, true, true) < cidac.getMaxCashLimit()) {
                 playerController.modifyBalance(cidac.getCash(), player);
                 InterfaceGUI.showMessage(player.getName() + ": Du besidder under " + cidac.getMaxCashLimit() + " i samlede værdier. Derfor modtager du " + cidac.getCash() + " i Matador Legatet");
             } else {

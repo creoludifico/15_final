@@ -1,7 +1,6 @@
 package Matador.Controllers;
 
 import Matador.GUI.InterfaceGUI;
-import Matador.Models.Field.Field;
 import Matador.Models.Field.OwnableField;
 import Matador.Models.Field.StreetField;
 import Matador.Models.User.Account;
@@ -123,7 +122,7 @@ public class PlayerController {
         player.getAccount().modifyBalance(appendedBalance, player.getName());
 
         if(player.getAccount().getBalance() < 0){
-            int totalAssets = this.getTotalAssets(player, true, true, true);
+            int totalAssets = this.getAssets(player, true, true, true);
             if(totalAssets > 0){
                 String sellHouse =  "Salg af huse";
                 String pawnField = "Pantsæt grund";
@@ -187,7 +186,9 @@ public class PlayerController {
             }
         }
     }
-    public int getTotalAssets(Player player, boolean withAccount, boolean withFieldPrice, boolean withBuildings){
+    
+    //Det er kun total assests hvis ,true,true,true. Så derfor er det kun getAssets. (Den skal også bruges til andre steder hvor man skal bruge assets)
+    public int getAssets(Player player, boolean withAccount, boolean withFieldPrice, boolean withBuildings){
         int totalAssets = 0;
         OwnableField[] ownableFields = fieldController.getOwnableFields(player);
         for(OwnableField ownableField : ownableFields){
