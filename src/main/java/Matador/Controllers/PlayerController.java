@@ -123,67 +123,74 @@ public class PlayerController {
 
         if(player.getAccount().getBalance() < 0){
             int totalAssets = this.getAssets(player, true, true, true);
+
             if(totalAssets > 0){
-                String sellHouse =  "Salg af huse";
                 String pawnField = "Pantsæt grund";
+                String sellHouse =  "Salg af huse";
                 String trading =  "Forhandle med en anden spiller";
-                String endLife =  "Afslut og tab";
-                String[] buttonsLastStand;
-                buttonsLastStand = new String[]{sellHouse, pawnField, trading, endLife};
-                while(true){
-                    String action = InterfaceGUI.awaitUserButtonsClicked("Du er på renden til at tabe! Du har nu følgende muligheder: ", currentPlayer.getName(), buttonsLastStand);
+                String endTurn =  "Afslut & tab";
+
+                String[] buttonsForEndActions;
+                while (true)
+                {
+                    String msg = "Du er tæt på at tabe! Gør noget! Du har nu følgende muligheder: ";
+                    if(player.getAccount().getBalance() >= 0){
+                        endTurn = "Afslut";
+                        msg = "Du overlever denne gang. Du har nu følgende muligheder: ";
+                    }
+                    buttonsForEndActions = new String[]{
+                            pawnField,
+                            sellHouse,
+                            trading,
+                            endTurn
+                    };
+
+                    String action = InterfaceGUI.awaitUserButtonsClicked(msg, player.getName(), buttonsForEndActions);
                     if(action.equals(pawnField)){
                         tradeController.pawnField(currentPlayer);
                     }
                     if(action.equals(sellHouse)){
                         tradeController.sellHouse(currentPlayer);
                     }
-                    if(action.equals(trading))
-                    {
+                    if(action.equals(trading)){
                         tradeController.trade(currentPlayer);
                     }
-                    if(action.equals(endLife))
-                    {
-                        totalAssets = 0;
-                        break;
-                    }
-                    if(player.getAccount().getBalance() > 0){
+                    if(action.equals(endTurn)){
                         break;
                     }
                 }
             }
 
-            if(totalAssets <= 0){
+            if(player.getAccount().getBalance() < 0){
                 OwnableField[] ownableFields = fieldController.getOwnableFields(player);
-                int[] ownableFieldIndexes = new int[ownableFields.length];
-                for(int i = 0;i<ownableFields.length;i++){
-                    int fieldIndex = fieldController.getFieldIndex(ownableFields[i]);
-                    ownableFields[i].setOwner(null, fieldIndex);
-                    ownableFields[i].setPawned(false, fieldIndex);
-                    if(ownableFields[i] instanceof StreetField){
-                        StreetField streetField = (StreetField) ownableFields[i];
+                for(OwnableField ownableField : ownableFields){
+                    int fieldIndex = fieldController.getFieldIndex(ownableField);
+                    ownableField.setOwner(null, fieldIndex);
+                    ownableField.setPawned(false, fieldIndex);
+                    if(ownableField instanceof StreetField){
+                        StreetField streetField =  (StreetField) ownableField;
                         streetField.setBuildings(0, fieldIndex);
                     }
-                    ownableFieldIndexes[i] = fieldIndex;
                 }
 
-                Player[] tempNewPlayers = new Player[players.length-1];
+                Player[] tempPlayers = new Player[players.length-1];
+
                 int i = 0;
                 for(Player activePlayer : players){
                     if(activePlayer != player){
-                        tempNewPlayers[i] = activePlayer;
+                        tempPlayers[i] = activePlayer;
                         i++;
                     }
                 }
-                players = tempNewPlayers;
+                players = tempPlayers;
+                InterfaceGUI.setGuiPlayerLost(player.getName());
 
-                InterfaceGUI.removeGuiPlayer(player.getName(), ownableFieldIndexes);
-                InterfaceGUI.showMessage("Du har tabt.", player.getName());
+                if(players.length == 1){
+                    InterfaceGUI.showMessage("DU HAR VUNDET!! ", players[0].getName());
+                    InterfaceGUI.shutDown();
+                }
             }
-            if(players.length == 1){
-                InterfaceGUI.showMessage("DU HAR VUNDET!!! Klik ok for at afslutte spillet", players[0].getName());
-                InterfaceGUI.shutDown();
-            }
+
         }
     }
 

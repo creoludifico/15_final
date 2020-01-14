@@ -142,7 +142,6 @@ public class ChanceCardController {
                     fieldController.fieldAction(player, playerFieldIndex, null);
                 }
             }
-            // Ryk til given position
         }
 
         //Ryk til et bestemt felt
@@ -150,15 +149,17 @@ public class ChanceCardController {
             MoveAbsoluteCard mac = (MoveAbsoluteCard) pickedCard;
             playerController.movePlayerToField(player, mac.getFieldIndex());
             InterfaceGUI.showMessage(player.getName() + ": Du er flyttet til " + fieldController.getFields()[mac.getFieldIndex()].getTitle());
-            // Ryk given felter bagud
+            fieldController.fieldAction(player, mac.getFieldIndex(), null);
+
         }
 
         //Ryk felter tilbage
         else if (pickedCard instanceof MoveBackwardsCard) {
             MoveBackwardsCard mbc = (MoveBackwardsCard) pickedCard;
-            playerController.movePlayerToField(player, (player.getFieldIndex() - mbc.getBackward()) % fieldController.getFields().length);
+            int newIndex = (player.getFieldIndex() - mbc.getBackward()) % fieldController.getFields().length;
+            playerController.movePlayerToField(player, newIndex);
             InterfaceGUI.showMessage(player.getName() + ": Du er flyttet 3 tilbage til " + fieldController.getFields()[player.getFieldIndex()].getTitle());
-            // Ryk i fængsel
+            fieldController.fieldAction(player, newIndex, null);
         }
 
         //Bli sat i fængsel
@@ -167,7 +168,6 @@ public class ChanceCardController {
             playerController.movePlayerToField(player, mtjc.getFieldIndex());
             player.setInJail(true);
             InterfaceGUI.showMessage(player.getName() + ": Du er nu i fængsel");
-            // Gratis ud af fængsel kort
         }
 
         //Få et benådningskort

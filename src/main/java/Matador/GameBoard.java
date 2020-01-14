@@ -61,15 +61,19 @@ public class GameBoard {
                 String raffleDicesString = "Kast med terning og sats på to ens";
 
                 String[] buttonsForJail;
-                if(currentPlayer.hasEscapeJailCard()){
+                if(currentPlayer.hasEscapeJailCard() && currentPlayer.getAccount().getBalance() >= 100){
                     buttonsForJail = new String[]{
                             escapeJailCardString,
                             pay100String,
                             raffleDicesString
                     };
-                }else{
+                }else if(currentPlayer.getAccount().getBalance() >= 100){
                     buttonsForJail = new String[]{
                             pay100String,
+                            raffleDicesString
+                    };
+                }else{
+                    buttonsForJail = new String[]{
                             raffleDicesString
                     };
                 }
@@ -107,6 +111,15 @@ public class GameBoard {
 
                 int currentPlayerFieldIndex = playerController.getCurrentPlayer().getFieldIndex();
                 fieldController.fieldAction(currentPlayer, currentPlayerFieldIndex, raffleCupController);
+
+                //Hvis man har tabt
+                if(playerController.getPlayerFromName(currentPlayer.getName()) == null){
+                    currentPlayerIndex++;
+                    if(currentPlayerIndex >= playerController.getPlayers().length){
+                        currentPlayerIndex = 0;
+                    }
+                    continue;
+                }
             }
 
             playerShakeTheRaffleCupFromJail = false;
@@ -165,7 +178,7 @@ public class GameBoard {
                 }
                 currentPlayerIndex++;
             }
-            if(currentPlayerIndex == playerController.getPlayers().length){
+            if(currentPlayerIndex >= playerController.getPlayers().length){
                 currentPlayerIndex = 0;
             }
         }
