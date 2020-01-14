@@ -502,10 +502,13 @@ public class FieldController {
         return result;
     }
 
-    public OwnableField[] getTradeableFields(OwnableField[] ownableFields) {
+    public OwnableField[] getTradeableFields(OwnableField[] ownableFields,boolean notPawned) {
         //Et godt eksempel hvor array list havde været til en kæmpe hjælp så det samme ikke skulle kaldes 2 gange
         int newSize = 0;
         for(OwnableField ownableField1 : ownableFields){
+            if(notPawned && ownableField1.getPawned()){
+                continue;
+            }
             if(!(ownableField1 instanceof StreetField)){
                 newSize++;
             }
@@ -519,6 +522,9 @@ public class FieldController {
 
         int i = 0;
         for(OwnableField ownableField1 : ownableFields){
+            if(notPawned && ownableField1.getPawned()){
+                continue;
+            }
             if(!(ownableField1 instanceof StreetField)){
                 tradeableFields[i] = ownableField1;
                 i++;
