@@ -71,10 +71,10 @@ public class TradeController {
 
         String[] titles = fieldController.getTitlesFromFields(pawnableFields);
 
-        String endPawn = "Afslut pansætning";
+        String endPawn = "Afslut pantsætning";
         String[] buttons = InterfaceGUI.getStringsForAction(titles, endPawn);
 
-        String action = InterfaceGUI.awaitDropDownSelected("Vælg en grund du vil pansætte", player.getName(), buttons);
+        String action = InterfaceGUI.awaitDropDownSelected("Vælg en grund du vil pantsætte", player.getName(), buttons);
 
         if(action.equals(endPawn)){
             return;
