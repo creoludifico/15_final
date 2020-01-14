@@ -1,6 +1,7 @@
 package Test;
 
 import Matador.Controllers.PlayerController;
+import Matador.GUI.InterfaceGUI;
 import Matador.Models.User.Account;
 import Matador.Models.User.Player;
 import org.junit.Test;
@@ -8,20 +9,18 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class PlayerControllerTest {
-    private PlayerController playerController = new PlayerController();
+
     @Test
     public void getCurrentPlayer() {
-            Player[] players = new Player[3];
-            Account account = new Account(3000);
+            InterfaceGUI.initGUI();
+            PlayerController playerController = new PlayerController();
 
-
-            for (int i = 0; i < 2; i++) {
-                Player player = new Player("test" + i, account);
-                players[i] = player;
-            }
-            playerController.setCurrentPlayer(0);
+        for (int i = 0; i < playerController.getPlayers().length; i++)
+        {
+            playerController.setCurrentPlayer(i);
             Player player = playerController.getCurrentPlayer();
-            assertEquals(player, "test0");
+            assertEquals(player.getName(), playerController.getPlayer(i).getName());
+        }
     }
 
     @Test
