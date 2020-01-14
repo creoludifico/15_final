@@ -10,10 +10,12 @@ import static org.junit.Assert.*;
 
 public class PlayerControllerTest {
 
+
     @Test
     public void getCurrentPlayer() {
-            InterfaceGUI.initGUI();
-            PlayerController playerController = new PlayerController();
+        PlayerController playerController = new PlayerController();
+
+        InterfaceGUI.initGUI();
 
         for (int i = 0; i < playerController.getPlayers().length; i++)
         {
@@ -23,24 +25,36 @@ public class PlayerControllerTest {
         }
     }
 
-    @Test
-    public void setCurrentPlayer() {
-    }
-
-    @Test
-    public void getPlayers() {
-    }
-
-    @Test
-    public void testGetPlayers() {
-    }
-
-    @Test
-    public void getPlayer() {
-    }
+//    @Test
+//    public void setCurrentPlayer() {
+//    }
+//
+//    @Test
+//    public void getPlayers() {
+//
+//    }
+//
+//
+//    @Test
+//    public void getPlayer() {
+//    }
 
     @Test
     public void getPlayerFromName() {
+        InterfaceGUI.initGUI();
+        PlayerController playerController = new PlayerController();
+
+
+//        Player player = playerController.getCurrentPlayer();
+//
+//        int i = 0;
+//        for(Player pl : playerController.getPlayers()){
+//            playerController.setCurrentPlayer(i);
+//            assertEquals(pl.getName(), player.getName());
+//            i++;
+//        }
+
+
     }
 
     @Test

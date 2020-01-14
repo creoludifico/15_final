@@ -187,13 +187,22 @@ public class FieldController {
     }
     private void ownableFieldAction(Player player, int fieldIndex, BeerField beerField, RaffleCupController raffleCupController){
         if(beerField.getOwner() != player && beerField.getOwner() != null){
-            InterfaceGUI.showMessage(beerField.getOwner().getName() + " ejer bryggeriet og der skal nu betales til vedkommende.", player.getName());
+
 
             int rent = raffleCupController.getTotalValue();
-            if(raffleCupController.isSameDie()){
-                rent *= 2;
-                InterfaceGUI.showMessage("Prisen skal ganges med to da du slog dobbelt!", player.getName());
+
+            if(beerField.getPawned())
+            {
+                rent = 0;
+                InterfaceGUI.showMessage(beerField.getOwner().getName() + " ejer bryggeriet men er pantsat", player.getName());
             }
+            if(raffleCupController.isSameDie() && !beerField.getPawned())
+            {
+                rent *= 2;
+                InterfaceGUI.showMessage(beerField.getOwner().getName() + "Prisen skal ganges med to da du slog dobbelt!", player.getName());
+
+            }
+
 
             int sameOwnerCounter = 0;
             for(Field field : fields){
@@ -204,7 +213,8 @@ public class FieldController {
                     }
                 }
             }
-            if(sameOwnerCounter == 2) {
+
+            if(sameOwnerCounter == 2 && !beerField.getPawned()) {
                 InterfaceGUI.showMessage("Da " + beerField.getOwner().getName() + " ejer begge bryggerier skal der betales dobbelt!", player.getName());
             }
             rent *= 25 * sameOwnerCounter;
@@ -230,7 +240,16 @@ public class FieldController {
                 }
             }
             int rent = ferryField.getRent(sameOwnerCounter);
-            InterfaceGUI.showMessage(ferryField.getOwner().getName() + " ejer " + sameOwnerCounter + " færger.", player.getName());
+            if(ferryField.getPawned())
+            {
+                rent = 0;
+                InterfaceGUI.showMessage(ferryField.getOwner().getName() + " ejer bryggeriet men er pantsat", player.getName());
+            }
+            else
+            {
+                InterfaceGUI.showMessage(ferryField.getOwner().getName() + " ejer " + sameOwnerCounter + " færger.", player.getName());
+            }
+
 
             InterfaceGUI.showMessage("Du skal betale " + rent, player.getName());
             playerController.modifyBalance(-rent, player);
@@ -241,9 +260,17 @@ public class FieldController {
     }
     private void ownableFieldAction(Player player, int fieldIndex, StreetField streetField){
         if(streetField.getOwner() != player && streetField.getOwner() != null){
-            InterfaceGUI.showMessage(streetField.getOwner().getName() + " ejer grunden og der skal nu betales til vedkommende.", player.getName());
 
             int rent = streetField.getRent();
+            if(streetField.getPawned())
+            {
+                rent = 0;
+                InterfaceGUI.showMessage(streetField.getOwner().getName() + " ejer bryggeriet men er pantsat", player.getName());
+            }
+            else
+            {
+                InterfaceGUI.showMessage(streetField.getOwner().getName() + " ejer grunden og der skal nu betales til vedkommende.", player.getName());
+            }
 
             if(streetField.getBuildings() == 0) {
                 //Hvis man ikke ejer nogle bygninger på den pågælende grund men ejer ALLE grunde i gruppen så skal man betale dobbelt leje

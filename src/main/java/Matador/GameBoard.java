@@ -5,6 +5,7 @@ import Matador.Controllers.ChanceCardController;
 import Matador.Controllers.FieldController;
 import Matador.Controllers.TradeController;
 import Matador.Controllers.RaffleCupController;
+import Matador.Models.Field.Field;
 import Matador.Models.User.Player;
 import Matador.Controllers.PlayerController;
 
@@ -106,6 +107,7 @@ public class GameBoard {
                 playerController.movePlayerForwardField(currentPlayer, raffleCupController.getTotalValue());
 
                 int currentPlayerFieldIndex = playerController.getCurrentPlayer().getFieldIndex();
+
                 fieldController.fieldAction(currentPlayer, currentPlayerFieldIndex, raffleCupController);
             }
 
