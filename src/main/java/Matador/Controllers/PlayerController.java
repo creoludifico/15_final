@@ -186,6 +186,28 @@ public class PlayerController {
             }
         }
     }
+
+    public int getHouses(Player player){
+        int houseCount = 0;
+        for(StreetField streetField: fieldController.getStreetFields(player, true)) {
+            if(streetField.getBuildings() > 4){
+                continue;
+            }
+            houseCount+=streetField.getBuildings();
+        }
+        return houseCount;
+    }
+
+    public int getHotels(Player player){
+        int hotelCount = 0;
+        for(StreetField streetField: fieldController.getStreetFields(player, true)) {
+            if(streetField.getBuildings() != 4){
+                continue;
+            }
+            hotelCount+=1;
+        }
+        return hotelCount;
+    }
     
     //Det er kun total assests hvis ,true,true,true. Så derfor er det kun getAssets. (Den skal også bruges til andre steder hvor man skal bruge assets)
     public int getAssets(Player player, boolean withAccount, boolean withFieldPrice, boolean withBuildings){

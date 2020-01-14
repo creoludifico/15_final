@@ -16,13 +16,7 @@ public class ChanceCardController {
     public ChanceCard[] getChanceCards() {
         return chanceCards;
     }
-    public static int getIndexOfChanceCard(ChanceCard[] chanceCards, ChanceCard key) {
-        for (int index = 0; index < chanceCards.length; index++) {
-            if (key.equals(chanceCards[index]))
-                return index;
-        }
-        return -1;
-    }
+
 
     public void setFieldController(FieldController fieldController) {
         this.fieldController = fieldController;
@@ -108,25 +102,12 @@ public class ChanceCardController {
         // Betal penge udfra antal huse og hoteller
         else if (pickedCard instanceof CashOutDependentBuildingCard) {
             CashOutDependentBuildingCard codbc = (CashOutDependentBuildingCard) pickedCard;
-            Field[] fields = fieldController.getFields();
             int total = 0;
-            for (int index = 0; index < fields.length; index++) {
-                Field field = fields[index];
-                if (field instanceof StreetField) {
-                    StreetField streetField = (StreetField) field;
-                    if (streetField.getOwner() == player) {
-                        if (streetField.getBuildings() <= 4) {
-                            total += -codbc.getHousePrice() * streetField.getBuildings();
-                        } else if (streetField.getBuildings() > 4) {
-                            total += -codbc.getHotelPrice();
-                        }
-                    }
-                }
-            }
+            total+=codbc.getHotelPrice()*playerController.getHotels(player);
+            total+=codbc.getHousePrice()*playerController.getHouses(player);
+
             playerController.modifyBalance(total, player);
             InterfaceGUI.showMessage(player.getName() + ": Din samlede beskatning er på " + total);
-
-            // Ryk til nærmeste færge + dobbelt leje hvis ejet
         }
 
         //Ryk til færge
@@ -199,12 +180,7 @@ public class ChanceCardController {
     public ChanceCard pickChanceCard() {
         activeCard = ++activeCard % chanceCards.length;
         return chanceCards[activeCard];
-//        ChanceCard temp = chanceCards[0];
-//        for (int i = 1; i < chanceCards.length; i++) {
-//            chanceCards[i - 1] = chanceCards[i];
-//        }
-//        chanceCards[chanceCards.length - 1] = temp;
-//        return chanceCards[0];
+
     }
     public void shuffleChanceCards() {
         Random rand = new Random();
