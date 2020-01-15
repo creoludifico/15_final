@@ -63,7 +63,7 @@ public class TradeController {
         }
     }
     public void pawnField(Player player){
-        OwnableField[] pawnableFields = fieldController.getTradeableFields(fieldController.getOwnableFields(player, false));
+        OwnableField[] pawnableFields = fieldController.getTradeableFields(fieldController.getOwnableFields(player, false),true);
         if(pawnableFields.length == 0){
             InterfaceGUI.showMessage("Du har ingen grunde der kan pantsættes", player.getName());
             return;
@@ -71,10 +71,10 @@ public class TradeController {
 
         String[] titles = fieldController.getTitlesFromFields(pawnableFields);
 
-        String endPawn = "Afslut pansætning";
+        String endPawn = "Afslut pantsætning";
         String[] buttons = InterfaceGUI.getStringsForAction(titles, endPawn);
 
-        String action = InterfaceGUI.awaitDropDownSelected("Vælg en grund du vil pansætte", player.getName(), buttons);
+        String action = InterfaceGUI.awaitDropDownSelected("Vælg en grund du vil pantsætte", player.getName(), buttons);
 
         if(action.equals(endPawn)){
             return;
@@ -163,7 +163,7 @@ public class TradeController {
 
     }
     public void trade(Player player) {
-        OwnableField[] tradeableFields = fieldController.getTradeableFields(fieldController.getOwnableFields(player, false));
+        OwnableField[] tradeableFields = fieldController.getTradeableFields(fieldController.getOwnableFields(player, false),false);
         if(tradeableFields.length == 0){
             InterfaceGUI.showMessage("Du har ingen felter du kan sælge til andre spillere", player.getName());
             return;

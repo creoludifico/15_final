@@ -10,6 +10,14 @@ import static org.junit.Assert.*;
 public class ChanceCardControllerTest {
     private ChanceCardController chanceCards = new ChanceCardController();
 
+    public static int getIndexOfChanceCard(ChanceCard[] chanceCards, ChanceCard key) {
+        for (int index = 0; index < chanceCards.length; index++) {
+            if (key.equals(chanceCards[index]))
+                return index;
+        }
+        return -1;
+    }
+
     private boolean[] initBooleanArray(int length, boolean trueFalse) {
         boolean[] result = new boolean[length];
         for (int i = 0; i < length; i++) {
@@ -35,7 +43,7 @@ public class ChanceCardControllerTest {
         assertEquals(originalDeck.length, shuffledDeck.length);
 
         for (ChanceCard card : shuffledDeck) {
-            assertTrue(ChanceCardController.getIndexOfChanceCard(originalDeck, card) != -1);
+            assertTrue(getIndexOfChanceCard(originalDeck, card) != -1);
         }
     }
 
@@ -48,9 +56,10 @@ public class ChanceCardControllerTest {
 
         for (int index = 0; index < originalDeck.length; index++) {
             ChanceCard card = chanceCards.pickChanceCard();
-            isTaken[ChanceCardController.getIndexOfChanceCard(originalDeck, card)] = true;
+            isTaken[getIndexOfChanceCard(originalDeck, card)] = true;
         }
 
         assertTrue(isAllTrueFalseArray(isTaken, true));
     }
+
 }

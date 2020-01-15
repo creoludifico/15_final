@@ -29,6 +29,7 @@ public class InterfaceGUI {
             Color.orange,
             Color.white
     };
+    private static int lostCounter = 0;
 
     public static void initGUI(){
         gui = new GUI();
@@ -155,20 +156,13 @@ public class InterfaceGUI {
         }
     }
 
-    public static void removeGuiPlayer(String name, int[] fieldIndexes){
-        GUI_Player[] guiPlayersNewTemp = new GUI_Player[guiPlayers.length-1];
-        int i = 0;
-        for(GUI_Player guiPlayer : guiPlayers){
-            if(!guiPlayer.getName().equals(name)){
-                guiPlayersNewTemp[i] = guiPlayer;
-                i++;
-            }
+    public static void setGuiPlayerLost(String name) {
+        GUI_Player guiPlayer = getGuiPlayer(name);
+        for(GUI_Field guiField : guiFields){
+            guiField.setCar(guiPlayer, false);
         }
-        guiPlayers = guiPlayersNewTemp;
-
-        for(int fieldIndex : fieldIndexes){
-            InterfaceGUI.setGUIFieldOwner(null, fieldIndex,colors[initPlayerIndex]);
-        }
+        lostCounter++;
+        guiPlayer.setName("-BANKEROT- " + lostCounter);
     }
 
     public static void shutDown(){

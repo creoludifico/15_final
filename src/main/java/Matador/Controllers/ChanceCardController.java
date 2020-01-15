@@ -16,13 +16,7 @@ public class ChanceCardController {
     public ChanceCard[] getChanceCards() {
         return chanceCards;
     }
-    public static int getIndexOfChanceCard(ChanceCard[] chanceCards, ChanceCard key) {
-        for (int index = 0; index < chanceCards.length; index++) {
-            if (key.equals(chanceCards[index]))
-                return index;
-        }
-        return -1;
-    }
+
 
     public void setFieldController(FieldController fieldController) {
         this.fieldController = fieldController;
@@ -108,25 +102,12 @@ public class ChanceCardController {
         // Betal penge udfra antal huse og hoteller
         else if (pickedCard instanceof CashOutDependentBuildingCard) {
             CashOutDependentBuildingCard codbc = (CashOutDependentBuildingCard) pickedCard;
-            Field[] fields = fieldController.getFields();
             int total = 0;
-            for (int index = 0; index < fields.length; index++) {
-                Field field = fields[index];
-                if (field instanceof StreetField) {
-                    StreetField streetField = (StreetField) field;
-                    if (streetField.getOwner() == player) {
-                        if (streetField.getBuildings() <= 4) {
-                            total += -codbc.getHousePrice() * streetField.getBuildings();
-                        } else if (streetField.getBuildings() > 4) {
-                            total += -codbc.getHotelPrice();
-                        }
-                    }
-                }
-            }
+            total+=codbc.getHotelPrice()*playerController.getHotels(player);
+            total+=codbc.getHousePrice()*playerController.getHouses(player);
+
             playerController.modifyBalance(total, player);
             InterfaceGUI.showMessage(player.getName() + ": Din samlede beskatning er på " + total);
-
-            // Ryk til nærmeste færge + dobbelt leje hvis ejet
         }
 
         //Ryk til færge
@@ -161,7 +142,6 @@ public class ChanceCardController {
                     fieldController.fieldAction(player, playerFieldIndex, null);
                 }
             }
-            // Ryk til given position
         }
 
         //Ryk til et bestemt felt
@@ -169,15 +149,17 @@ public class ChanceCardController {
             MoveAbsoluteCard mac = (MoveAbsoluteCard) pickedCard;
             playerController.movePlayerToField(player, mac.getFieldIndex());
             InterfaceGUI.showMessage(player.getName() + ": Du er flyttet til " + fieldController.getFields()[mac.getFieldIndex()].getTitle());
-            // Ryk given felter bagud
+            fieldController.fieldAction(player, mac.getFieldIndex(), null);
+
         }
 
         //Ryk felter tilbage
         else if (pickedCard instanceof MoveBackwardsCard) {
             MoveBackwardsCard mbc = (MoveBackwardsCard) pickedCard;
-            playerController.movePlayerToField(player, (player.getFieldIndex() - mbc.getBackward()) % fieldController.getFields().length);
+            int newIndex = (player.getFieldIndex() - mbc.getBackward()) % fieldController.getFields().length;
+            playerController.movePlayerToField(player, newIndex);
             InterfaceGUI.showMessage(player.getName() + ": Du er flyttet 3 tilbage til " + fieldController.getFields()[player.getFieldIndex()].getTitle());
-            // Ryk i fængsel
+            fieldController.fieldAction(player, newIndex, null);
         }
 
         //Bli sat i fængsel
@@ -186,7 +168,6 @@ public class ChanceCardController {
             playerController.movePlayerToField(player, mtjc.getFieldIndex());
             player.setInJail(true);
             InterfaceGUI.showMessage(player.getName() + ": Du er nu i fængsel");
-            // Gratis ud af fængsel kort
         }
 
         //Få et benådningskort
@@ -199,12 +180,7 @@ public class ChanceCardController {
     public ChanceCard pickChanceCard() {
         activeCard = ++activeCard % chanceCards.length;
         return chanceCards[activeCard];
-//        ChanceCard temp = chanceCards[0];
-//        for (int i = 1; i < chanceCards.length; i++) {
-//            chanceCards[i - 1] = chanceCards[i];
-//        }
-//        chanceCards[chanceCards.length - 1] = temp;
-//        return chanceCards[0];
+
     }
     public void shuffleChanceCards() {
         Random rand = new Random();
