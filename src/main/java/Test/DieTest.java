@@ -43,7 +43,7 @@ public class DieTest {
             amountCount[rollValue]++;
         }
         for (int i = 2; i >= 12; i++) {
-            //assertEquals(probs, (double)(amountCount[i]/amountTest), 0.01);
+            assertEquals(probs[i], amountCount[i]/amountTest, 0.01);
         }
     }
 
