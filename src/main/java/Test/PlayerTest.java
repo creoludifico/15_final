@@ -86,6 +86,7 @@ public class PlayerTest {
     @Test
     public void setBonusOnNextRaffle() {
         player.setBonusOnNextRaffle(true);
+        player.setBonusOnNextRaffle(false);
     }
 
     @Test
