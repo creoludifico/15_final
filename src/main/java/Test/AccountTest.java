@@ -14,20 +14,9 @@ import org.junit.jupiter.api.BeforeAll;
 import static org.junit.Assert.*;
 
 public class AccountTest {
-//    PlayerController playerController = new PlayerController();
-//
-//     initialisere spillerne før de indsættes i test metoderne
     @BeforeClass
     public static void InitializePlayers(){
-        InterfaceGUI.initGUI();
-        InterfaceGUI.setGuiPlayersCount(1);
-         InterfaceGUI.addGUIPlayer("John Doe", 0);
-//        Player[] players = new Player[3];
-//        for (int i = 1;i<=3;i++) {
-//            Account account = new Account(3000);
-//            Player player = new Player("test" + i, account);
-//            players[i - 1] = player;
-//        }
+        InterfaceGUI.initGUI(true);
     }
 
     @Test
@@ -44,14 +33,8 @@ public class AccountTest {
 
     @Test
     public void getBalance() {
-//        int balance = playerController.getPlayer(0).getAccount().getBalance();
-//        playerController.getPlayer(0).getAccount().modifyBalance(2, playerController.getPlayer(0).getName());
-//        int newBalance = playerController.getPlayer(0).getAccount().getBalance();
-//
         Account account = new Account(-1);
         assertEquals(-1, account.getBalance());
-
-        //Same as modifyBalance()
     }
 
     @Test

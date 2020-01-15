@@ -15,9 +15,7 @@ public class PlayerTest {
 
     @BeforeClass
     public static void initGui(){
-        InterfaceGUI.initGUI();
-        InterfaceGUI.setGuiPlayersCount(1);
-        InterfaceGUI.addGUIPlayer("John Doe", 0);
+        InterfaceGUI.initGUI(true);
     }
 
     @Before

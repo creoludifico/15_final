@@ -24,12 +24,10 @@ public abstract class OwnableField extends Field {
     public void setOwner(Player owner, int fieldIndex) {
         this.owner = owner;
         String ownerName = "";
-        Color color = Color.white;
         if(owner != null){
             ownerName = owner.getName();
-            color = InterfaceGUI.getGuiPlayer(owner.getName()).getPrimaryColor();
         }
-        InterfaceGUI.setGUIFieldOwner(ownerName, fieldIndex, color);
+        InterfaceGUI.setGUIFieldOwner(ownerName, fieldIndex);
     }
 
     public Boolean getPawned() {

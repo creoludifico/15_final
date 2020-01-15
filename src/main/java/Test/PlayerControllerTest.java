@@ -3,6 +3,7 @@ package Test;
 import Matador.Controllers.PlayerController;
 import Matador.GUI.InterfaceGUI;
 import Matador.Models.User.Player;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -10,18 +11,21 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class PlayerControllerTest {
-    PlayerController playerController;
+    private PlayerController playerController;
 
-    @BeforeClass
-    public static void initialize() {
-        InterfaceGUI.initGUI();
-        InterfaceGUI.setGuiPlayersCount(1);
-        InterfaceGUI.addGUIPlayer("John Doe", 0);
-    }
+    private static String[] stringReturns = new String[]{"Kat", "Hund", "Flåt"};
+    private static int[] integerReturns = new int[]{3};
 
     @Before
-    public void newController() {
+    public void initialize() {
+        InterfaceGUI.initGUI(integerReturns, stringReturns);
         playerController = new PlayerController();
+    }
+
+    @After
+    public void tearDown() {
+        playerController = null;
+        InterfaceGUI.shutDown();
     }
 
     @Test
