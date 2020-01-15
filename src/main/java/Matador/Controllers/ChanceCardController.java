@@ -157,6 +157,8 @@ public class ChanceCardController {
         else if (pickedCard instanceof MoveBackwardsCard) {
             MoveBackwardsCard mbc = (MoveBackwardsCard) pickedCard;
             int newIndex = (player.getFieldIndex() - mbc.getBackward()) % fieldController.getFields().length;
+            if (newIndex < 0)
+                newIndex = fieldController.getFields().length + newIndex;
             playerController.movePlayerToField(player, newIndex);
             InterfaceGUI.showMessage(player.getName() + ": Du er flyttet 3 tilbage til " + fieldController.getFields()[player.getFieldIndex()].getTitle());
             fieldController.fieldAction(player, newIndex, null);

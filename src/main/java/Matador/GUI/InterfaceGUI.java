@@ -44,18 +44,15 @@ public class InterfaceGUI {
         gui = new GUI();
         guiFields = gui.getFields();
     }
-    public static void initGUI(boolean fake){
-        fakeGui = fake;
-        if(fake)
-            return;
-        initGUI();
+    public static void initFakeGUI(){
+        fakeGui = true;
     }
-    public static void initGUI(int[] _integerReturns, String[] _stringReturns) {
+    public static void initFakeGUI(int[] _integerReturns, String[] _stringReturns) {
         integerReturns = _integerReturns;
         integerIndex = 0;
         stringReturns = _stringReturns;
         stringIndex = 0;
-        initGUI(true);
+        initFakeGUI();
     }
     public static void initGUIFields(Field[] fields) {
         if(fakeGui)
@@ -126,37 +123,46 @@ public class InterfaceGUI {
     }
     public static String awaitUserButtonsClicked (String msg, String... buttonsString){
         if(fakeGui){
-            return stringReturns[stringIndex++];
+            return buttonsString[(int)(Math.random()*buttonsString.length)];
         }
         return gui.getUserButtonPressed(msg, buttonsString);
     }
     public static String awaitUserButtonsClicked (String msg, String name, String... buttonsString){
         if(fakeGui){
-            return stringReturns[stringIndex++];
+            return buttonsString[(int)(Math.random()*buttonsString.length)];
         }
         return gui.getUserButtonPressed("PERSON: " + name + " - " + msg, buttonsString);
     }
     public static String awaitDropDownSelected(String msg, String name, String... selections){
         if(fakeGui){
-            return stringReturns[stringIndex++];
+            return selections[(int)(Math.random()*selections.length)];
         }
         return gui.getUserSelection("PERSON: " + name + " - " + msg, selections);
     }
     public static int awaitUserIntegerInput (String msg) {
         if(fakeGui){
-            return integerReturns[integerIndex++];
+            if(integerIndex < integerReturns.length)
+                return integerReturns[integerIndex++];
+            else
+                return (int)(Math.random()*1000);
         }
         return gui.getUserInteger(msg);
     }
     public static int awaitUserIntegerInput (String msg, String name) {
         if(fakeGui){
-            return integerReturns[integerIndex++];
+            if(integerIndex < integerReturns.length)
+                return integerReturns[integerIndex++];
+            else
+                return (int)(Math.random()*1000);
         }
         return gui.getUserInteger("PERSON: " + name + " - " + msg);
     }
     public static int awaitUserIntegerInput (String msg, int min, int max) {
         if(fakeGui){
-            return integerReturns[integerIndex++];
+            if(integerIndex < integerReturns.length)
+                return integerReturns[integerIndex++];
+            else
+                return (int)(Math.random()*1000);
         }
         return gui.getUserInteger(msg, min, max); //Der er en fejl i GUIen at hvis man ikke indtaster noget og klikker ENTER kommer der en fejl. (Kan ikke gribes via try catch)
     }

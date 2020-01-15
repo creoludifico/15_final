@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
 public class AccountTest {
     @BeforeClass
     public static void InitializePlayers(){
-        InterfaceGUI.initGUI(true);
+        InterfaceGUI.initFakeGUI();
     }
 
     @Test

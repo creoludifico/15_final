@@ -64,6 +64,7 @@ public class PlayerController {
         for(Player player : players){
             player.setFieldIndexx(0);
         }
+        setCurrentPlayer(0);
     }
 
     public Player[] getPlayers(){

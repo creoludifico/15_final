@@ -15,7 +15,7 @@ public class PlayerTest {
 
     @BeforeClass
     public static void initGui(){
-        InterfaceGUI.initGUI(true);
+        InterfaceGUI.initFakeGUI();
     }
 
     @Before

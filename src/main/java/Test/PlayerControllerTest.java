@@ -18,7 +18,7 @@ public class PlayerControllerTest {
 
     @Before
     public void initialize() {
-        InterfaceGUI.initGUI(integerReturns, stringReturns);
+        InterfaceGUI.initFakeGUI(integerReturns, stringReturns);
         playerController = new PlayerController();
     }
 
