@@ -17,11 +17,18 @@ public class TradeController {
         this.playerController = playerController;
     }
 
+    private static String[] getStringsForAction(String[] strings, String lastAction){
+        int newLength = strings.length + 1;
+        String[] actions = Arrays.copyOf(strings, newLength);
+        actions[newLength-1] = lastAction;
+        return actions;
+    }
+
     public void auction(OwnableField ownableField, int fieldIndex) {
         String[] playerNames = playerController.getPlayerNames(playerController.getPlayers());
 
         String endAuction = "Afslut auktion";
-        String[] buttons = InterfaceGUI.getStringsForAction(playerNames, endAuction);
+        String[] buttons = getStringsForAction(playerNames, endAuction);
 
         Player highestBidder = null;
         int highestBid = 0;
@@ -72,7 +79,7 @@ public class TradeController {
         String[] titles = fieldController.getTitlesFromFields(pawnableFields);
 
         String endPawn = "Afslut pantsætning";
-        String[] buttons = InterfaceGUI.getStringsForAction(titles, endPawn);
+        String[] buttons = getStringsForAction(titles, endPawn);
 
         String action = InterfaceGUI.awaitDropDownSelected("Vælg en grund du vil pantsætte", player.getName(), buttons);
 
@@ -95,7 +102,7 @@ public class TradeController {
         String[] titles = fieldController.getTitlesFromFields(pawnedFields);
 
         String endPawn = "Afslut ophæv pantsætning";
-        String[] buttons = InterfaceGUI.getStringsForAction(titles, endPawn);
+        String[] buttons = getStringsForAction(titles, endPawn);
 
         String action = InterfaceGUI.awaitDropDownSelected("Vælg en grund du vil ophæve pansætningen på", player.getName(), buttons);
 
@@ -122,7 +129,7 @@ public class TradeController {
         String[] titles = fieldController.getTitlesFromFields(streetFields);
 
         String endSellHouse = "Afslut salg af huse";
-        String[] buttons = InterfaceGUI.getStringsForAction(titles, endSellHouse);
+        String[] buttons = getStringsForAction(titles, endSellHouse);
 
         String action = InterfaceGUI.awaitDropDownSelected("Vælg en grund du vil sælge et hus fra", player.getName(), buttons);
 
@@ -145,7 +152,7 @@ public class TradeController {
         String[] titles = fieldController.getTitlesFromFields(streetFields);
 
         String endBuyHouse = "Afslut køb af huse";
-        String[] buttons = InterfaceGUI.getStringsForAction(titles, endBuyHouse);
+        String[] buttons = getStringsForAction(titles, endBuyHouse);
 
         String action = InterfaceGUI.awaitDropDownSelected("Vælg en grund du vil købe et hus på", player.getName(), buttons);
 
@@ -172,7 +179,7 @@ public class TradeController {
         String[] titles = fieldController.getTitlesFromFields(tradeableFields);
 
         String endTrading = "Afslut handel med grund";
-        String[] buttons = InterfaceGUI.getStringsForAction(titles, endTrading);
+        String[] buttons = getStringsForAction(titles, endTrading);
 
         String action = InterfaceGUI.awaitDropDownSelected("Vælg en grund du vil sælge til en anden spiller", player.getName(), buttons);
 
@@ -182,7 +189,7 @@ public class TradeController {
         OwnableField ownableField = (OwnableField) fieldController.getFieldFromTitle(action);
 
         String[] playerNames = playerController.getPlayerNames(playerController.getPlayers(player));
-        String[] buttonsPlayer = InterfaceGUI.getStringsForAction(playerNames, endTrading);
+        String[] buttonsPlayer = getStringsForAction(playerNames, endTrading);
         String playerToTradeName = InterfaceGUI.awaitUserButtonsClicked("Vælg en spiller du vil sælge grunden til", player.getName(), buttonsPlayer);
 
         if(playerToTradeName.equals(endTrading)){
