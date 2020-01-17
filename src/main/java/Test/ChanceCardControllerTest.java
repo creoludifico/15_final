@@ -25,7 +25,7 @@ public class ChanceCardControllerTest {
 
     @Before
     public void initialize(){
-        InterfaceGUI.initFakeGUI();
+        InterfaceGUI.initFakeGUI(integerReturns, stringReturns);
         chanceCardController = new ChanceCardController();
         FieldController fieldController = new FieldController();
         playerController = new PlayerController();
