@@ -138,13 +138,13 @@ public class PlayerController {
                         endTurn = "Afslut";
                         msg = "Du overlever denne gang. Du har nu følgende muligheder: ";
                     }
+
                     buttonsForEndActions = new String[]{
                             pawnField,
                             sellHouse,
                             trading,
                             endTurn
                     };
-
                     String action = InterfaceGUI.awaitUserButtonsClicked(msg, player.getName(), buttonsForEndActions);
                     if(action.equals(pawnField)){
                         tradeController.pawnField(currentPlayer);

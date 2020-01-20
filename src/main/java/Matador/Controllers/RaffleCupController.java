@@ -49,6 +49,7 @@ public class RaffleCupController {
                 this.shakeTheRaffleCup();
                 break;
         }
+        InterfaceGUI.setDices(d1.getDie(), d2.getDie());
         demoCounter++;
     }
     public void shakeTheRaffleCup(){

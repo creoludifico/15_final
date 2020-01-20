@@ -143,10 +143,8 @@ public class TradeController {
         }
 
         String[] titles = fieldController.getTitlesFromFields(streetFields);
-
         String endBuyHouse = "Afslut køb af huse";
         String[] buttons = InterfaceGUI.getStringsForAction(titles, endBuyHouse);
-
         String action = InterfaceGUI.awaitDropDownSelected("Vælg en grund du vil købe et hus på", player.getName(), buttons);
 
         if(action.equals(endBuyHouse)){
@@ -160,7 +158,6 @@ public class TradeController {
         streetField.setBuildings(streetField.getBuildings()+1, fieldController.getFieldIndex(streetField));
         playerController.modifyBalance(-streetField.getBuildingPrice(), player);
         InterfaceGUI.showMessage("Du købte et hus på grunden " + streetField.getTitle() + " for kr. " + streetField.getBuildingPrice());
-
     }
     public void trade(Player player) {
         OwnableField[] tradeableFields = fieldController.getTradeableFields(fieldController.getOwnableFields(player, false),false);
