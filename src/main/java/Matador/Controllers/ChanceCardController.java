@@ -57,7 +57,7 @@ public class ChanceCardController {
                 new CashInOutCard("Efter auktionen på Assistenshuset, hvor de havde pantsat Deres tøj, modtager De ekstra kr. 108.", 108),
                 new CashInOutCard("Deres præmieobligation er kommet ud. De modtager kr. 100 af banken.", 100)
         };
-        shuffleChanceCards();
+        //shuffleChanceCards();
     }
 
     public void action (Player player){
@@ -178,9 +178,9 @@ public class ChanceCardController {
     }
 
     public ChanceCard pickChanceCard() {
-        activeCard = ++activeCard % chanceCards.length;
-        return chanceCards[activeCard];
-
+        //activeCard = ++activeCard % chanceCards.length;
+        //return chanceCards[activeCard];
+        return chanceCards[13];
     }
     public void shuffleChanceCards() {
         Random rand = new Random();

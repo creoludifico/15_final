@@ -11,4 +11,6 @@ public class Die {
     public int getDie() {
         return this.value;
     }
+
+    public void setDie(int value) { this.value = value; }
 }
