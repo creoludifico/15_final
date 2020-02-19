@@ -328,18 +328,6 @@ public class TradeController {
         return result;
     }
 
-    private boolean otherOwnedHaveBuildings(StreetField meField, Player player) {
-        for (Field field: fieldController.getFields()) {
-            if(field instanceof StreetField){
-                StreetField streetField = (StreetField)field;
-                if (streetField.getGroupName().equals(meField.getGroupName()) && streetField.getOwner() == player && streetField.getBuildings() > 0 && streetField != meField) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
 //    private OwnableField[] tradeableFields(Player player) {
 //        int count = 0;
 //        for (Field field: fieldController.getFields()) {
@@ -378,7 +366,7 @@ public class TradeController {
         int count = 0;
         for (StreetField[] group: groups) {
             if(tradeableGroup(group)) {
-                count += getStreetGroupSize(group[0].getGroupName());
+                count += group.length; //getStreetGroupSize(group[0].getGroupName());
             }
         }
         //remember to count the other tradeable fields as well!
